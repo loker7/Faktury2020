@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29709.97
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Faktury2020", "Faktury2020\Faktury2020.csproj", "{BD122DD4-FBF6-4DFC-A297-53B7355DBA96}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BD122DD4-FBF6-4DFC-A297-53B7355DBA96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD122DD4-FBF6-4DFC-A297-53B7355DBA96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD122DD4-FBF6-4DFC-A297-53B7355DBA96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD122DD4-FBF6-4DFC-A297-53B7355DBA96}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {287693F6-D956-45EF-B284-76071C1DA718}
+	EndGlobalSection
+EndGlobal

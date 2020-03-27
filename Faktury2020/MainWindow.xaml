@@ -1,0 +1,17 @@
+﻿<Window x:Class="Faktury2020.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Faktury2020"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Button Content="PDF z unicode" HorizontalAlignment="Left" Height="23" Margin="455,291,0,0" VerticalAlignment="Top" Width="77" Click="Button_Click"/>
+        <Button Content="Just PDF" HorizontalAlignment="Left" Height="23" Margin="561,291,0,0" VerticalAlignment="Top" Width="81" Click="Button_Click_1"/>
+        <Button Content="Wczytaj bazę danych" HorizontalAlignment="Left" Height="34" Margin="59,66,0,0" VerticalAlignment="Top" Width="184"/>
+        <Button Content="Zrób proformy" HorizontalAlignment="Left" Height="35" Margin="59,114,0,0" VerticalAlignment="Top" Width="184"/>
+        <Button Content="Zrób bazę dla skany" HorizontalAlignment="Left" Height="34" Margin="282,66,0,0" VerticalAlignment="Top" Width="165" Click="Button_Click_2"/>
+
+    </Grid>
+</Window>
