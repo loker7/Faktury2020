@@ -7,6 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CsvHelper" Version="15.0.5" />
+    <PackageReference Include="MailKit" Version="2.7.0" />
     <PackageReference Include="PdfSharp" Version="1.51.5185-beta" />
     <PackageReference Include="PDFsharp-MigraDoc" Version="1.51.5186-beta" />
     <PackageReference Include="System.Drawing.Common" Version="4.7.0" />

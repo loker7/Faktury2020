@@ -9,200 +9,222 @@ using MigraDoc.DocumentObjectModel.Shapes;
 using Image = MigraDoc.DocumentObjectModel.Shapes.Image;
 using MigraDoc.Rendering;
 using MigraDoc.DocumentObjectModel.Tables;
+using CsvHelper;
+using System.Linq;
+using System.Collections.Generic;
+using System.IO;
+using System.Globalization;
+using System;
+using System.Windows.Media;
+using System.Drawing;
+using System.Security.Cryptography.X509Certificates;
+using MailKit.Net.Smtp;
+using MimeKit;
+using MailKit.Security;
 
 namespace Faktury2020
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
+    /// 
     public partial class MainWindow : Window
     {
-
-
-
+        int numerzListy=0;
+        public static bool uwagaoZaliczce;
+        public static bool zaliczka;
+              List<Faktura> proformyDlaDanegoMiesiaca = new List<Faktura>();
         public MainWindow()
         {
             InitializeComponent();
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
-
+            txtdataWystawienia.Text = txtdataWystawienia2.Text;
         }
 
-
-       
-
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void DatePicker_SelectedDateChanged(object sender,
+            SelectionChangedEventArgs e)
         {
-
-            string[] texts = new string[]
-{
-  // International version of the text in English.
-  "English\n" +
-  "PDFsharp is a .NET library for creating and processing PDF documents 'on the fly'. " +
-  "The library is completely written in C# and based exclusively on safe, managed code. " +
-  "PDFsharp offers two powerful abstraction levels to create and process PDF documents.\n" +
-  "For drawing text, graphics, and images there is a set of classes which are modeled similar to the classes " +
-  "of the name space System.Drawing of the .NET framework. With these classes it is not only possible to create " +
-  "the content of PDF pages in an easy way, but they can also be used to draw in a window or on a printer.\n" +
-  "Additionally PDFsharp completely models the structure elements PDF is based on. With them existing PDF documents " +
-  "can be modified, merged, or split with ease.\n" +
-  "The source code of PDFsharp is Open Source under the MIT license (http://en.wikipedia.org/wiki/MIT_License). " +
-  "Therefore it is possible to use PDFsharp without limitations in non open source or commercial projects/products.",
- 
-  // PDFsharp is 'Made in Germany'.
-  "German (deutsch)\n" +
-  "PDFsharp ist eine .NET-Bibliothek zum Erzeugen und Verarbeiten von PDF-Dokumenten 'On the Fly'. " +
-  "Die Bibliothek ist vollständig in C# geschrieben und basiert ausschließlich auf sicherem, verwaltetem Code. " +
-  "PDFsharp bietet zwei leistungsstarke Abstraktionsebenen zur Erstellung und Verarbeitung von PDF-Dokumenten.\n" +
-  "Zum Zeichnen von Text, Grafik und Bildern gibt es einen Satz von Klassen, die sehr stark an die Klassen " +
-  "des Namensraums System.Drawing des .NET Frameworks angelehnt sind. Mit diesen Klassen ist es nicht " +
-  "nur auf einfache Weise möglich, den Inhalt von PDF-Seiten zu gestalten, sondern sie können auch zum " +
-  "Zeichnen in einem Fenster oder auf einem Drucker verwendet werden.\n" +
-  "Zusätzlich modelliert PDFsharp vollständig die Stukturelemente, auf denen PDF basiert. Dadurch können existierende " +
-  "PDF-Dokumente mit Leichtigkeit zerlegt, ergänzt oder umgebaut werden.\n" +
-  "Der Quellcode von PDFsharp ist Open-Source unter der MIT-Lizenz (http://de.wikipedia.org/wiki/MIT-Lizenz). " +
-  "Damit kann PDFsharp auch uneingeschränkt in Nicht-Open-Source- oder kommerziellen Projekten/Produkten eingesetzt werden.",
- 
-  // Greek version.
-  // The text was translated by Babel Fish. We here in Germany have no idea what it means.
-  // If you are a native speaker please correct it and mail it to mailto:PDFsharpSupport@pdfsharp.de
-  "Greek (Translated with Babel Fish)\n" +
-  "Το PDFsharp είναι βιβλιοθήκη δικτύου α. για τη δημιουργία και την επεξεργασία των εγγράφων PDF 'σχετικά με τη μύγα'. " +
-  "Η βιβλιοθήκη γράφεται εντελώς γ # και βασίζεται αποκλειστικά εκτός από, διοικούμενος κώδικας. " +
-  "Το PDFsharp προσφέρει δύο ισχυρά επίπεδα αφαίρεσης για να δημιουργήσει και να επεξεργαστεί τα έγγραφα PDF. " +
-  "Για το κείμενο, τη γραφική παράσταση, και τις εικόνες σχεδίων υπάρχει ένα σύνολο κατηγοριών που διαμορφώνονται " +
-  "παρόμοιος με τις κατηγορίες του διαστημικού σχεδίου συστημάτων ονόματος του. πλαισίου δικτύου. " +
-  "Με αυτές τις κατηγορίες που είναι όχι μόνο δυνατό να δημιουργηθεί το περιεχόμενο των σελίδων PDF με έναν εύκολο " +
-  "τρόπο, αλλά αυτοί μπορεί επίσης να χρησιμοποιηθεί για να επισύρει την προσοχή σε ένα παράθυρο ή σε έναν εκτυπωτή. " +
-  "Επιπλέον PDFsharp διαμορφώνει εντελώς τα στοιχεία PDF δομών είναι βασισμένο. Με τους τα υπάρχοντα έγγραφα PDF " +
-  "μπορούν να τροποποιηθούν, συγχωνευμένος, ή να χωρίσουν με την ευκολία. Ο κώδικας πηγής PDFsharp είναι ανοικτή πηγή " +
-  "με άδεια MIT (http://en.wikipedia.org/wiki/MIT_License). Επομένως είναι δυνατό να χρησιμοποιηθεί PDFsharp χωρίς " +
-  "προβλήματα στη μη ανοικτή πηγή ή τα εμπορικά προγράμματα/τα προϊόντα.",
- 
-  // Russian version (by courtesy of Alexey Kuznetsov).
-  "Russian\n" +
-  "PDFsharp это .NET библиотека для создания и обработки PDF документов 'налету'. " +
-  "Библиотека полностью написана на языке C# и базируется исключительно на безопасном, управляемом коде. " +
-  "PDFsharp использует два мощных абстрактных уровня для создания и обработки PDF документов.\n" +
-  "Для рисования текста, графики, и изображений в ней используется набор классов, которые разработаны аналогично с" +
-  "пакетом System.Drawing, библиотеки .NET framework. С помощью этих классов возможно не только создавать" +
-  "содержимое PDF страниц очень легко, но они так же позволяют рисовать напрямую в окне приложения или на принтере.\n" +
-  "Дополнительно PDFsharp имеет полноценные модели структурированных базовых элементов PDF. Они позволяют работать с существующим PDF документами " +
-  "для изменения их содержимого, склеивания документов, или разделения на части.\n" +
-  "Исходный код PDFsharp библиотеки это Open Source распространяемый под лицензией MIT (http://ru.wikipedia.org/wiki/MIT_License). " +
-  "Теоретически она позволяет использовать PDFsharp без ограничений в не open source проектах или коммерческих проектах/продуктах.",
- 
-  // French version (by courtesy of Olivier Dalet).
-  "French (Français)\n" +
-  "PDFSharp est une librairie .NET permettant de créer et de traiter des documents PDF 'à la volée'. " +
-  "La librairie est entièrement écrite en C# et exclusivement basée sur du code sûr et géré. " +
-  "PDFSharp fournit deux puissants niveaux d'abstraction pour la création et le traitement des documents PDF.\n" +
-  "Un jeu de classes, modélisées afin de ressembler aux classes du namespace System.Drawing du framework .NET, " +
-  "permet de dessiner du texte, des graphiques et des images. Non seulement ces classes permettent la création du " +
-  "contenu des pages PDF de manière aisée, mais elles peuvent aussi être utilisées pour dessiner dans une fenêtre ou pour l'imprimante.\n" +
-  "De plus, PDFSharp modélise complètement les éléments structurels de PDF. Ainsi, des documents PDF existants peuvent être " +
-  "facilement modifiés, fusionnés ou éclatés.\n" +
-  "Le code source de PDFSharp est Open Source sous licence MIT (http://fr.wikipedia.org/wiki/Licence_MIT). " +
-  "Il est donc possible d'utiliser PDFSharp sans limitation aucune dans des projets ou produits non Open Source ou commerciaux.",
- 
-  // Dutch version (by giCalle)
-  "Dutch\n" +
-  "PDFsharp is een .NET bibliotheek om PDF documenten te creëren en te verwerken. " +
-  "De bibliotheek is volledig geschreven in C# en gebruikt uitsluitend veilige, 'managed code'. " +
-  "PDFsharp biedt twee krachtige abstractie niveaus aan om PDF documenten te maken en te verwerken.\n" +
-  "Om tekst, beelden en foto's weer te geven zĳn er een reeks klassen beschikbaar, gemodelleerd naar de klassen " +
-  "uit de 'System.Drawing' naamruimte van het .NET framework. Met behulp van deze klassen is het niet enkel mogelĳk " +
-  "om de inhoud van PDF pagina's aan te maken op een eenvoudige manier, maar ze kunnen ook gebruikt worden om dingen " +
-  "weer te geven in een venster of naar een printer. Daarbovenop implementeert PDFsharp de volledige elementen structuur " +
-  "waarop PDF is gebaseerd. Hiermee kunnen bestaande PDF documenten eenvoudig aangepast, samengevoegd of opgesplitst worden.\n" +
-  "De broncode van PDFsharp is opensource onder een MIT licentie (http://nl.wikipedia.org/wiki/MIT-licentie). " +
-  "Daarom is het mogelĳk om PDFsharp te gebruiken zonder beperkingen in niet open source of commerciële projecten/producten.",
- 
-  // Danish version (by courtesy of Mikael Lyngvig).
-  "Danish (Dansk)\n" +
-  "PDFsharp er et .NET bibliotek til at dynamisk lave og behandle PDF dokumenter. " +
-  "Biblioteket er skrevet rent i C# og indeholder kun sikker, managed kode. " +
-  "PDFsharp tilbyder to stærke abstraktionsniveauer til at lave og behandle PDF dokumenter. " +
-  "Til at tegne tekst, grafik og billeder findes der et sæt klasser som er modelleret ligesom klasserne i navnerummet " +
-  "System.Drawing i .NET biblioteket. Med disse klasser er det ikke kun muligt at udforme indholdet af PDF siderne på en " +
-  "nem måde – de kan også bruges til at tegne i et vindue eller på en printer. " +
-  "Derudover modellerer PDFsharp fuldstændigt strukturelementerne som PDF er baseret på. " +
-  "Med dem kan eksisterende PDF dokumenter nemt modificeres, sammenknyttes og adskilles. " +
-  "Kildekoden til PDFsharp er Open Source under MIT licensen (http://da.wikipedia.org/wiki/MIT-Licensen). " +
-  "Derfor er det muligt at bruge PDFsharp uden begrænsninger i både lukkede og kommercielle projekter og produkter.",
- 
-  // Portuguese version (by courtesy of Luís Rodrigues).
-  "Portuguese (Português)\n" +
-  "PDFsharp é uma biblioteca .NET para a criação e processamento de documentos PDF 'on the fly'." +
-  "A biblioteca é completamente escrita em C# e baseada exclusivamente em código gerenciado e seguro. " +
-  "O PDFsharp oferece dois níveis de abstração poderosa para criar e processar documentos PDF.\n" +
-  "Para desenhar texto, gráficos e imagens, há um conjunto de classes que são modeladas de forma semelhante às classes " +
-  "do espaço de nomes System.Drawing do framework .NET. Com essas classes não só é possível criar " +
-  "o conteúdo das páginas PDF de uma maneira fácil, mas podem também ser usadas para desenhar numa janela ou numa impressora.\n" +
-  "Adicionalmente, o PDFSharp modela completamente a estrutura dos elementos em que o PDF é baseado. Com eles, documentos PDF existentes " +
-  "podem ser modificados, unidos, ou divididos com facilidade.\n" +
-  "O código fonte do PDFsharp é Open Source sob a licença MIT (http://en.wikipedia.org/wiki/MIT_License). " +
-  "Por isso, é possível usar o PDFsharp sem limitações em projetos/produtos não open source ou comerciais.",
- 
-  // Polish version (by courtesy of Krzysztof Jędryka)
-  "Polish (polski)\n" +
-  "PDFsharp jest  biblioteką .NET umożliwiającą tworzenie i przetwarzanie dokumentów PDF 'w locie'. " +
-  "Biblioteka ta została stworzona w całości w języku C# i jest oparta wyłącznie na bezpiecznym i zarządzanym kodzie. " +
-  "PDFsharp oferuje dwa rozbudowane poziomy abstrakcji do tworzenia i przetwarzania dokumentów PDF.\n" +
-  "Do rysowania tekstu, grafiki i obrazów stworzono zbiór klas projektowanych na wzór klas przestrzeni nazw System.Drawing" +
-  "platformy .NET. Z pomocą tych klas można tworzyć w wygodny sposób nie tylko zawartość stron dokumentu PDF, ale można również" +
-  "rysować w oknie programu lub generować wydruki.\n" +
-  "Ponadto PDFsharp w pełni odwzorowuje strukturę elementów na których opiera się format pliku PDF." +
-  "Używając tych elementów, dokumenty PDF można modyfikować, łączyć lub dzielić z łatwością.\n" +
-  "Kod źródłowy PDFsharp jest dostępny na licencji Open Source MIT (http://pl.wikipedia.org/wiki/Licencja_MIT). " +
-  "Zatem można korzystać z PDFsharp bez żadnych ograniczeń w projektach niedostępnych dla społeczności Open Source lub komercyjnych.",
- 
- 
-  // Your language may come here.
-  "Invitation\n" +
-  "If you use PDFsharp and haven't found your native language in this document, we will be pleased to get your translation of the text above and include it here.\n" +
-  "Mail to PDFsharpSupport@pdfsharp.de"
-};
-
-            // Create new document
-            PdfDocument document = new PdfDocument();
-
-            // Set font encoding to unicode
-            XPdfFontOptions options = new XPdfFontOptions(PdfFontEncoding.Unicode, PdfFontEmbedding.Always);
-
-            XFont font = new XFont("Times New Roman", 12, XFontStyle.Regular, options);
-
-            // Draw text in different languages
-            for (int idx = 0; idx < texts.Length; idx++)
+            // ... Get DatePicker reference.
+            var picker = sender as DatePicker;
+          
+            // ... Get nullable DateTime from SelectedDate.
+            DateTime? date = picker.SelectedDate;
+            if (date == null)
             {
-                PdfPage page = document.AddPage();
-                XGraphics gfx = XGraphics.FromPdfPage(page);
-                XTextFormatter tf = new XTextFormatter(gfx);
-                tf.Alignment = XParagraphAlignment.Left;
-
-                tf.DrawString(texts[idx], font, XBrushes.Black,
-                  new XRect(100, 100, page.Width - 200, 600), XStringFormats.TopLeft);
+                // ... A null object.
+                txtterminPlatnosci.Text = ""; //ZROBIĆ PÓŹNIEJ~!!!!!!!!!!!
             }
+            else
+            {
+                // ... No need to display the time.
+                txtterminPlatnosci.Text = date.Value.ToShortDateString();
+            }
+        }
+        private void Button_Click_11(object sender, RoutedEventArgs e)
+        {
+            int miesiacSprzedazyLiczba=0;
+            if (txtdataSprzedazy.Text.Length == 6)
+            {
+                miesiacSprzedazyLiczba = int.Parse(txtdataSprzedazy.Text.Remove(1).ToString());
+            }
+            else if (txtdataSprzedazy.Text.Length == 7)
+            {
+                miesiacSprzedazyLiczba = int.Parse(txtdataSprzedazy.Text.Remove(2).ToString());
+            }
+            Label1.Content = miesiacSprzedazyLiczba.ToString();
+                        
 
-            const string filename = "Unicode_tempfile.pdf";
-            // Save the document...
-            document.Save(filename);
-            // ...and start a viewer.
-            // Process.Start(filename);
 
 
+            //if (sdataSprzedazy.Length == 6)
+            //{
+            //    strMcSprzedazy = sdataSprzedazy.Substring(0, 1);
+            //    strRokSprzedazy = sdataSprzedazy.Substring(2, 4).ToString();
+
+            //}
+            //else if (sdataSprzedazy.Length == 7)
+            //{
+            //    strMcSprzedazy = sdataSprzedazy.Substring(0, 2).ToString();
+            //    strRokSprzedazy = sdataSprzedazy.Substring(3, 5).ToString();
+            //}
+            //else MessageBox.Show("Proszę wprowadzić poprawną datę sprzedaży w formacie MM-RRRR", "Informacja");
+
+            ////wydobrywa miesiac z daty w formacie dd-mm-rrrr
+            //sterminPlatnosci = sterminPlatnosci.Substring(3, 2);
+
+
+            //int miesiacPlatnosci = int.Parse(sterminPlatnosci);
+            // int miesiacSprzedazy = int.Parse(sdataSprzedazy);
+            // if (miesiacPlatnosci < miesiacSprzedazy) 
+
+            // Label1.Content = strRokSprzedazy;
+
+
+            //wczytajProformyDlaDanegoMca();
+            // txtterminPlatnosci.Text = DatePicker.SelectedDateProperty.ToString();
+
+            //DatePicker picker = new DatePicker();
+            //txtterminPlatnosci.Text = picker.SelectedDate.ToString();
         }
 
-
-      
-
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private void chkPozycja2_Checked(object sender, RoutedEventArgs e)
         {
 
-            Books books = new Books();
+            txtLp2.IsEnabled = true;
+            txtnazwaTowaruLubUslugi2.IsEnabled = true;
+            txtilosc2.IsEnabled = true;
+            txtjednostka2.IsEnabled = true;
+            txtwartoscJednostkowaBrutto2.IsEnabled = true;
+            txtwartoscBrutto2.IsEnabled = true;
+
+            txtLp2.Text = "2.";
+        }
+
+        private void chkPozycja2_Unchecked(object sender, RoutedEventArgs e)
+        {
+            txtLp2.IsEnabled = false;
+            txtnazwaTowaruLubUslugi2.IsEnabled = false;
+            txtilosc2.IsEnabled = false;
+            txtjednostka2.IsEnabled = false;
+            txtwartoscJednostkowaBrutto2.IsEnabled = false;
+            txtwartoscBrutto2.IsEnabled = false;
+
+            //txtLp2.Text = "";
+        }
+
+        private void chkPozycja1_Checked(object sender, RoutedEventArgs e)
+        {
+            txtLp1.IsEnabled = true;
+            txtnazwaTowaruLubUslugi1.IsEnabled = true;
+            txtilosc1.IsEnabled = true;
+            txtjednostka1.IsEnabled = true;
+            txtwartoscJednostkowaBrutto1.IsEnabled = true;
+            txtwartoscBrutto1.IsEnabled = true;
+
+            txtLp1.Text = "1.";
+            txtLp2.Text = "2.";
+        }
+        private void chkPozycja1_Unchecked(object sender, RoutedEventArgs e)
+        {
+            txtLp1.IsEnabled = false;
+            txtnazwaTowaruLubUslugi1.IsEnabled = false;
+            txtilosc1.IsEnabled = false;
+            txtjednostka1.IsEnabled = false;
+            txtwartoscJednostkowaBrutto1.IsEnabled = false;
+            txtwartoscBrutto1.IsEnabled = false;
+
+            txtLp1.Text = "";
+            txtLp2.Text = "1.";
+        }
+        public void generujProformy()
+        {
+            try
+            {
+                using (var reader = new StreamReader("xb_baza.csv")) //"path\\to\\file.csv"
+                {
+                    using (var csvReader = new CsvReader(reader, CultureInfo.InvariantCulture))
+                    {
+                        var faktury = csvReader.GetRecords<Faktura>();//.ToList();
+                        foreach (var faktura in faktury)
+                        {
+                            if (czyTerazProforma(faktura))
+                            {
+                                string pomocniczy;
+                                txtnumerFaktury.Text = "1-PROFORMA-" + faktura.stalaCzescNumeruFaktury + "-" + txtdataSprzedazy.Text;
+                                if (faktura.sposobZaplaty == "P" | faktura.sposobZaplaty == "P") { pomocniczy = "przelew"; }
+                                else if (faktura.sposobZaplaty == "G" | faktura.sposobZaplaty == "g") { pomocniczy = "GOTÓWKA"; }
+                                else if (faktura.sposobZaplaty == "PG" | faktura.sposobZaplaty == "pg") { pomocniczy = "przelew/GOTÓWKA"; }
+                                else { pomocniczy = "BŁĄD"; }
+                                txtsposobZaplaty.Text = pomocniczy;
+                                txtnazwaNabywcy.Text = faktura.nazwaNabywcy;
+                                txtulicaNabywcy.Text = faktura.ulicaNabywcy;
+                                txtmiastoiKodNabywcy.Text = faktura.miastoiKodNabywcy;
+                                txtnipNabywcy.Text = faktura.nipNabywcy;
+                                if (faktura.wybranyOkres == "1") { pomocniczy = "1-MIESIĄC"; }
+                                else if (faktura.wybranyOkres == "3") { pomocniczy = "3-MIESIĄCE"; }
+                                else if (faktura.wybranyOkres == "6") { pomocniczy = "6-MIESIĘCY"; }
+                                else if (faktura.wybranyOkres == "12") { pomocniczy = "12-MIESIĘCY"; }
+                                else { pomocniczy = "BŁĄD"; }
+                                txtnazwaTowaruLubUslugi1.Text = "Abonament xBiuro - pakiet " + faktura.wybranyPakiet + " na " + pomocniczy;
+                                txtilosc1.Text = faktura.ilosc;
+                                txtwartoscJednostkowaBrutto1.Text = faktura.wartoscJednostkowaBrutto;
+                                txtwartoscBrutto1.Text = faktura.wartoscBrutto;
+                                txtrazem.Text = faktura.razem;
+                                txtPozostaloDoZaplaty.Text = faktura.razem;
+                                pomocniczy = faktura.razem.Substring(faktura.razem.Length - 2) + "/100 groszy brutto";
+                                decimal pomocniczyDec = decimal.Parse(faktura.razem);
+                                pomocniczyDec = Math.Truncate(pomocniczyDec);
+                                int pomocniczyInt = Decimal.ToInt32(pomocniczyDec);
+                                txtslownie.Text = "SŁOWNIE: " + Formatowanie.LiczbaSlownie(pomocniczyInt) + " " + Formatowanie.WalutaSlownie(pomocniczyInt, "PLN") + " i " + pomocniczy;
+                                txtslownie.Text = txtslownie.Text.ToUpper();
+
+                                generujPDF();
+                                //if (faktura.czyZaplacono == "T") txtZaplacono.Text = faktura.razem;
+                                //else if (faktura.czyZaplacono == "N") txtPozostaloDoZaplaty.Text = faktura.razem;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (FileNotFoundException)
+            {
+                MessageBox.Show("Brak bazy danych w folderze programu. Umieść plik xb_baza.csv folderze programu i spróbuj ponownie.", "Faktury 2020", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            }
+        }
+
+        private void btnGenerujProformy_Click(object sender, RoutedEventArgs e)
+        {
+            generujProformy();
+        }
+
+        private void generujPDF()
+        {
+            Faktura faktura = new Faktura();
+            // Books books = new Books();
 
             PdfDocument document = new PdfDocument(); // Create a new PDF document
-            document.Info.Title = "Created with PDFsharp";
-            document.Info.Author = "Faktury2020";
+            document.Info.Title = "Faktura";
+            document.Info.Author = "xSolutions Sp.z o.o.";
             PdfPage page = document.AddPage(); // Create an empty page
             XGraphics gfx = XGraphics.FromPdfPage(page);  // Get an XGraphics object for drawing
             XPdfFontOptions options = new XPdfFontOptions(PdfFontEncoding.Unicode);  // Set font encoding to unicode
@@ -211,8 +233,6 @@ namespace Faktury2020
             //gfx.MFEH = PdfFontEmbedding.Default;
             XFont font = new XFont("Times New Roman", 12, XFontStyle.Regular, options); //Then you'll create a font:
 
-
-            
             Document doc = new Document(); //tu startuje migradoc, po kolei: dokument, sekcja i paragraf..
             Section sec = doc.AddSection();
 
@@ -225,17 +245,24 @@ namespace Faktury2020
             Column columnMiejsceiDataWystawienia2 = tableMiejsceiDataWystawienia.AddColumn(Unit.FromCentimeter(12));
             columnMiejsceiDataWystawienia2.Format.Alignment = ParagraphAlignment.Right;
 
-
             Row rowMiejsceiDataWystawienia = tableMiejsceiDataWystawienia.AddRow();
-            Cell cellMiejsceiDataWystawienia = rowMiejsceiDataWystawienia.Cells[0]; 
+            Cell cellMiejsceiDataWystawienia = rowMiejsceiDataWystawienia.Cells[0];
             cellMiejsceiDataWystawienia = rowMiejsceiDataWystawienia.Cells[0];
-            cellMiejsceiDataWystawienia.AddParagraph("Katowice");
+            // cellMiejsceiDataWystawienia.AddParagraph(faktura.miejsce_wystawienia);
+            cellMiejsceiDataWystawienia.AddParagraph(lblmiejsce_wystawienia.Content.ToString());
             // rowKontoBankowe.Format.Alignment = ParagraphAlignment.Right;
 
-
             cellMiejsceiDataWystawienia = rowMiejsceiDataWystawienia.Cells[1];
-            cellMiejsceiDataWystawienia.AddParagraph("Wystawiono dnia: 16-03-2020");
 
+            //PONIŻEJ INACZEJ GDY ZALICZKA
+            if (zaliczka == true)
+            {
+                cellMiejsceiDataWystawienia.AddParagraph("Wystawiono dnia: " + txtterminPlatnosci.Text);
+            }
+            else
+            {
+                cellMiejsceiDataWystawienia.AddParagraph("Wystawiono dnia: " + txtdataWystawienia.Text);
+            }
             doc.LastSection.Add(tableMiejsceiDataWystawienia);
 
             //Paragraph miasto = sec.AddParagraph();
@@ -249,24 +276,32 @@ namespace Faktury2020
             sec.AddParagraph();
 
             Paragraph numerFaktury = sec.AddParagraph();
-            numerFaktury.AddText("Faktura proforma 1-TEST-2-2020");
+            if (zaliczka == true)
+            {
+                numerFaktury.AddText("Faktura zaliczka 1-" + faktura.stalaCzescNumeruFaktury + "-" + txtdataSprzedazy.Text);
+            }
+            else
+            {
+                numerFaktury.AddText(txtnumerFaktury.Text);
+            }
+
             numerFaktury.Format.Font.Bold = true;
             numerFaktury.Format.Alignment = ParagraphAlignment.Center;
 
             sec.AddParagraph();
 
             Paragraph dataSprzedazy = sec.AddParagraph();
-            dataSprzedazy.AddText("Data sprzedaży: 2-2020");
+            dataSprzedazy.AddText("Data sprzedaży: " + txtdataSprzedazy.Text);
             dataSprzedazy.Format.Font.Bold = true;
             dataSprzedazy.Format.Alignment = ParagraphAlignment.Right;
 
             Paragraph sposobZaplaty = sec.AddParagraph();
-            sposobZaplaty.AddText("Forma płatności: GOTÓWKA");
+            sposobZaplaty.AddText("Forma płatności: " + txtsposobZaplaty.Text);
             sposobZaplaty.Format.Font.Bold = true;
             sposobZaplaty.Format.Alignment = ParagraphAlignment.Right;
-            
+
             Paragraph terminPlatnosci = sec.AddParagraph();
-            terminPlatnosci.AddText("Termin płatności: 01-04-2020");
+            terminPlatnosci.AddText("Termin płatności: " + txtterminPlatnosci.Text);
             terminPlatnosci.Format.Font.Bold = true;
             terminPlatnosci.Format.Alignment = ParagraphAlignment.Right;
 
@@ -278,7 +313,7 @@ namespace Faktury2020
             _ = tableSN.AddColumn(Unit.FromCentimeter(9));
             columnSN.Format.Alignment = ParagraphAlignment.Left;
             Row rowSN = tableSN.AddRow();
-            Cell cellSN = rowSN.Cells[0];  
+            Cell cellSN = rowSN.Cells[0];
             cellSN = rowSN.Cells[0];
             cellSN.AddParagraph("Sprzedawca");
             cellSN.Format.Font.Bold = true;
@@ -289,47 +324,46 @@ namespace Faktury2020
             Row rowEmpty = tableSN.AddRow();
             Cell cellEmpty = rowEmpty.Cells[0];
             cellEmpty = rowEmpty.Cells[0];
-           // cellEmpty.AddParagraph(""); //to jest niepotrzebne = i tak jest pusta linia
+            // cellEmpty.AddParagraph(""); //to jest niepotrzebne = i tak jest pusta linia
             cellEmpty = rowEmpty.Cells[1];
             // cellEmpty.AddParagraph(""); //to jest niepotrzebne = i tak jest pusta linia
 
             Row rowNazwaSprzedawcyiNabywcy = tableSN.AddRow();
             Cell cellNazwaSprzedawcyiNabywcy = rowEmpty.Cells[0];
             cellNazwaSprzedawcyiNabywcy = rowNazwaSprzedawcyiNabywcy.Cells[0];
-            cellNazwaSprzedawcyiNabywcy.AddParagraph("xSolutions Sp. z o.o.");
+            cellNazwaSprzedawcyiNabywcy.AddParagraph(txtnazwaSprzedawcy.Text);
             cellNazwaSprzedawcyiNabywcy.Format.Font.Bold = true;
             cellNazwaSprzedawcyiNabywcy = rowNazwaSprzedawcyiNabywcy.Cells[1];
-            cellNazwaSprzedawcyiNabywcy.AddParagraph("Aldona Nieznana");
+            cellNazwaSprzedawcyiNabywcy.AddParagraph(txtnazwaNabywcy.Text);
             cellNazwaSprzedawcyiNabywcy.Format.Font.Bold = true;
 
             Row rowUlicaSprzedawcyiNabywcy = tableSN.AddRow();
             Cell cellUlicaSprzedawcyiNabywcy = rowEmpty.Cells[0];
             cellUlicaSprzedawcyiNabywcy = rowUlicaSprzedawcyiNabywcy.Cells[0];
-            cellUlicaSprzedawcyiNabywcy.AddParagraph("ul. Mickiewicza 29");
+            cellUlicaSprzedawcyiNabywcy.AddParagraph(txtulicaSprzedawcy.Text);
             cellUlicaSprzedawcyiNabywcy = rowUlicaSprzedawcyiNabywcy.Cells[1];
-            cellUlicaSprzedawcyiNabywcy.AddParagraph("ul Nieznana 20");
+            cellUlicaSprzedawcyiNabywcy.AddParagraph(txtulicaNabywcy.Text);
 
             Row rowMiastoiKodSprzedawcyiNabywcy = tableSN.AddRow();
             Cell cellMiastoiKodSprzedawcyiNabywcy = rowEmpty.Cells[0];
             cellMiastoiKodSprzedawcyiNabywcy = rowUlicaSprzedawcyiNabywcy.Cells[0];
-            cellMiastoiKodSprzedawcyiNabywcy.AddParagraph("40-085 Katowice");
+            cellMiastoiKodSprzedawcyiNabywcy.AddParagraph(txtmiastoiKodSprzedawcy.Text);
             cellMiastoiKodSprzedawcyiNabywcy = rowUlicaSprzedawcyiNabywcy.Cells[1];
-            cellMiastoiKodSprzedawcyiNabywcy.AddParagraph("41-200 Sosnowiec");
+            cellMiastoiKodSprzedawcyiNabywcy.AddParagraph(txtmiastoiKodNabywcy.Text);
 
-           Row rowEmpty2 = tableSN.AddRow();
-           // Cell cellEmpty2 = rowEmpty2.Cells[0];
+            Row rowEmpty2 = tableSN.AddRow();
+            // Cell cellEmpty2 = rowEmpty2.Cells[0];
             //cellEmpty2 = rowEmpty2.Cells[0];
-  
+
             //cellEmpty2 = rowEmpty2.Cells[1];
-  
 
             Row rowNIPSprzedawcyiNabywcy = tableSN.AddRow();
             Cell cellNIPSprzedawcyiNabywcy = rowEmpty.Cells[0];
             cellNIPSprzedawcyiNabywcy = rowNIPSprzedawcyiNabywcy.Cells[0];
-            cellNIPSprzedawcyiNabywcy.AddParagraph("NIP 634-293-59-61");
+            cellNIPSprzedawcyiNabywcy.AddParagraph(txtnipSprzedawcy.Text);
             cellNIPSprzedawcyiNabywcy.Format.Font.Bold = true;
             cellNIPSprzedawcyiNabywcy = rowNIPSprzedawcyiNabywcy.Cells[1];
-            cellNIPSprzedawcyiNabywcy.AddParagraph("NIP 000-000-00-00");
+            cellNIPSprzedawcyiNabywcy.AddParagraph("NIP: " + txtnipNabywcy.Text);
             cellNIPSprzedawcyiNabywcy.Format.Font.Bold = true;
 
             Row rowEmpty3 = tableSN.AddRow();
@@ -347,7 +381,7 @@ namespace Faktury2020
             cellBankiKontoBankowe.AddParagraph("Bank: ");
             cellBankiKontoBankowe.Format.Font.Bold = true;
             cellBankiKontoBankowe = rowBankiKontoBankowe.Cells[1];
-            cellBankiKontoBankowe.AddParagraph("Nest Bank");
+            cellBankiKontoBankowe.AddParagraph(txtbankSprzedawcy.Text);
             cellBankiKontoBankowe.Format.Font.Bold = true;
 
             //def konto bankowe 
@@ -355,15 +389,15 @@ namespace Faktury2020
             Cell cellKontoBankowe = rowKontoBankowe.Cells[0];
             cellKontoBankowe = rowKontoBankowe.Cells[0];
             cellKontoBankowe.AddParagraph("Konto: ");
-           // rowKontoBankowe.Format.Alignment = ParagraphAlignment.Right;
+            // rowKontoBankowe.Format.Alignment = ParagraphAlignment.Right;
             cellKontoBankowe.Format.Font.Bold = true;
-           
+
             cellKontoBankowe = rowKontoBankowe.Cells[1];
-            cellKontoBankowe.AddParagraph("44 2530 0008 2064 1044 1937 0001");
+            cellKontoBankowe.AddParagraph(txtkontoSprzedawcy.Text);
             cellKontoBankowe.Format.Font.Bold = true;
 
             Row rowEmpty4 = tableBankiKontoBankowe.AddRow();
-           
+
             // chcę, aby 'POZYCJE FAKTURY' było napisane nie w obramowaniu a nad tabelą, robię więc manewr polegający na przedłużeniu niewidocznej tabeli 
             Row rowPozycjeFaktury = tableBankiKontoBankowe.AddRow();
             Cell cellPozycjeFaktury = rowPozycjeFaktury.Cells[1];
@@ -372,7 +406,6 @@ namespace Faktury2020
             cellPozycjeFaktury.Format.Font.Bold = true;
             rowPozycjeFaktury.Format.Alignment = ParagraphAlignment.Left;
 
-    
             doc.LastSection.Add(tableSN);
             doc.LastSection.Add(tableBankiKontoBankowe);
 
@@ -382,12 +415,11 @@ namespace Faktury2020
 
             //def column Lp
             Column column = table.AddColumn(Unit.FromCentimeter(1));
-           
 
             //def colum NazwaTowaruLubUsługi
             _ = table.AddColumn(Unit.FromCentimeter(6));
             // def column Ilość 
-             _ = table.AddColumn(Unit.FromCentimeter(1));
+            _ = table.AddColumn(Unit.FromCentimeter(1));
             // def column Jednostka
             _ = table.AddColumn(Unit.FromCentimeter(1.5));
             // def column Wartość jednostkowa brutto
@@ -427,55 +459,67 @@ namespace Faktury2020
             cell5.AddParagraph("Wartość brutto \n PLN");
             cell5.Format.Font.Bold = true;
             cell5.Format.Alignment = ParagraphAlignment.Center;
+            if (chkPozycja11.IsChecked == true)
+            {
+                Row row2 = table.AddRow();
+                Cell cellR2C0 = row2.Cells[0];
+                cellR2C0.AddParagraph(txtLp1.Text);
+                cellR2C0.Format.Alignment = ParagraphAlignment.Center;
 
-            Row row2 = table.AddRow();
-            Cell cellR2C0 = row2.Cells[0];
-            cellR2C0.AddParagraph("1");
-            cellR2C0.Format.Alignment = ParagraphAlignment.Center;
+                Cell cellR2C1 = row2.Cells[1];
+                cellR2C1.AddParagraph(txtnazwaTowaruLubUslugi1.Text);
+                cellR2C1.Format.Alignment = ParagraphAlignment.Center;
 
-            Cell cellR2C1 = row2.Cells[1];
-            cellR2C1.AddParagraph("Abonament xBiuro - pakiet STANDARD na 12-MIESIĘCY");
-            cellR2C1.Format.Alignment = ParagraphAlignment.Center;
+                Cell cellR2C2 = row2.Cells[2];
+                cellR2C2.AddParagraph(txtilosc1.Text);
+                cellR2C2.Format.Alignment = ParagraphAlignment.Center;
 
-            Cell cellR2C2 = row2.Cells[2];
-            cellR2C2.AddParagraph("1");
-            cellR2C2.Format.Alignment = ParagraphAlignment.Center;
+                Cell cellR2C3 = row2.Cells[3];
+                cellR2C3.AddParagraph(txtjednostka1.Text);
+                cellR2C3.Format.Alignment = ParagraphAlignment.Center;
 
-            Cell cellR2C3 = row2.Cells[3];
-            cellR2C3.AddParagraph("usługa");
-            cellR2C3.Format.Alignment = ParagraphAlignment.Center;
+                Cell cellR2C4 = row2.Cells[4];
+                cellR2C4.AddParagraph(txtwartoscJednostkowaBrutto1.Text);
+                cellR2C4.Format.Alignment = ParagraphAlignment.Center;
 
-            Cell cellR2C4 = row2.Cells[4];
-            cellR2C4.AddParagraph("723,24");
-            cellR2C4.Format.Alignment = ParagraphAlignment.Center;
+                Cell cellR2C5 = row2.Cells[5];
+                cellR2C5.AddParagraph(txtwartoscBrutto1.Text);
+                cellR2C5.Format.Alignment = ParagraphAlignment.Center;
+            }
+            if (chkPozycja2.IsChecked == true)
+            {
+                Row row2 = table.AddRow();
+                Cell cellR2C0 = row2.Cells[0];
+                cellR2C0.AddParagraph(txtLp2.Text);
+                cellR2C0.Format.Alignment = ParagraphAlignment.Center;
 
-            Cell cellR2C5 = row2.Cells[5];
-            cellR2C5.AddParagraph("723,24");
-            cellR2C5.Format.Alignment = ParagraphAlignment.Center;
+                Cell cellR2C1 = row2.Cells[1];
+                cellR2C1.AddParagraph(txtnazwaTowaruLubUslugi2.Text);
+                cellR2C1.Format.Alignment = ParagraphAlignment.Center;
 
-            
+                Cell cellR2C2 = row2.Cells[2];
+                cellR2C2.AddParagraph(txtilosc2.Text);
+                cellR2C2.Format.Alignment = ParagraphAlignment.Center;
 
-            //foreach (var elem in books)
-            //{
-            //    row = table.AddRow();
+                Cell cellR2C3 = row2.Cells[3];
+                cellR2C3.AddParagraph(txtjednostka2.Text);
+                cellR2C3.Format.Alignment = ParagraphAlignment.Center;
 
-            //    cell = row.Cells[0];
-            //    cell.AddParagraph(elem.author);
+                Cell cellR2C4 = row2.Cells[4];
+                cellR2C4.AddParagraph(txtwartoscJednostkowaBrutto2.Text);
+                cellR2C4.Format.Alignment = ParagraphAlignment.Center;
 
-            //    cell = row.Cells[1];
-            //    cell.AddParagraph(elem.title);
-
-            //    cell = row.Cells[2];
-            //    cell.AddParagraph(elem.year.ToString());
-
-            //}
+                Cell cellR2C5 = row2.Cells[5];
+                cellR2C5.AddParagraph(txtwartoscBrutto2.Text);
+                cellR2C5.Format.Alignment = ParagraphAlignment.Center;
+            }
 
             //add table to document
             doc.LastSection.Add(table);
 
             Paragraph slownie = sec.AddParagraph();
             slownie.Format.Font.Bold = true;
-            slownie.AddText("\n SŁOWNIE: SIEDEMSET DWADZIEŚCIA TRZY ZŁOTE I 24/100 GROSZY BRUTTO");
+            slownie.AddText("\n " + txtslownie.Text);
 
             //def tablePODSUMOWANIE Razem, Zapłacono, Pozostało do zapłaty
             Table tablePodsumowanie = new Table();
@@ -490,9 +534,9 @@ namespace Faktury2020
             cellPodsumowanie1.AddParagraph("Razem");
             cellPodsumowanie1.Format.Font.Bold = true;
             cellPodsumowanie1 = rowPodsumowanie1.Cells[1];
-            cellPodsumowanie1.AddParagraph("723,24 PLN");
+            cellPodsumowanie1.AddParagraph(txtrazem.Text);
             cellPodsumowanie1.Format.Font.Bold = false;
-  
+
             Row rowPodsumowanie2 = tablePodsumowanie.AddRow();
             Cell cellPodsumowanie2 = rowPodsumowanie2.Cells[0];
             cellPodsumowanie2 = rowPodsumowanie2.Cells[0];
@@ -501,7 +545,7 @@ namespace Faktury2020
             cellPodsumowanie2.Format.Font.Bold = true;
 
             cellPodsumowanie2 = rowPodsumowanie2.Cells[1];
-            cellPodsumowanie2.AddParagraph("0,00 PLN");
+            cellPodsumowanie2.AddParagraph(txtZaplacono.Text);
             cellPodsumowanie2.Format.Font.Bold = false;
 
             Row rowPodsumowanie3 = tablePodsumowanie.AddRow();
@@ -512,18 +556,21 @@ namespace Faktury2020
             cellPodsumowanie3.Format.Font.Bold = true;
 
             cellPodsumowanie3 = rowPodsumowanie3.Cells[1];
-            cellPodsumowanie3.AddParagraph("723,24 PLN");
+            cellPodsumowanie3.AddParagraph(txtPozostaloDoZaplaty.Text);
             cellPodsumowanie3.Format.Font.Bold = false;
 
             doc.LastSection.Add(tablePodsumowanie);
 
             Paragraph uwagi = sec.AddParagraph();
             uwagi.Format.Font.Bold = false;
-            uwagi.AddText("UWAGI: Zwolnienie podmiotowe z VAT wg. art. 113 ust. 1 Ustawy o VAT. W przypadku braku opłacenia faktury w terminie świadczenie usługi zostanie automatycznie wstrzymane. \n \n \n");
-           
+            uwagi.AddText("UWAGI: " + txtuwagi.Text + " \n \n \n" + txtuwagi2.Text + " \n \n \n");
 
-            //def table bank i konto bankowe
-            Table tablePodpisy = new Table();
+            ////PONIŻEJ INACZEJ GDY ZALICZKA
+            //if (uwagaoZaliczce == true) txtuwagi2.Text = "Dokument wystawiany do Faktura zaliczka 1-" + faktura.stalaCzescNumeruFaktury + "-" + txtdataSprzedazy.Text + " z dnia " + txtdataWystawienia.Text;
+            //else txtuwagi2.Text = "";
+
+           //def table bank i konto bankowe
+           Table tablePodpisy = new Table();
             tablePodpisy.Borders.Width = 0.0;
             Column columnPodpisy1 = tablePodpisy.AddColumn(Unit.FromCentimeter(8.25));
             columnPodpisy1.Format.Alignment = ParagraphAlignment.Center;
@@ -535,7 +582,7 @@ namespace Faktury2020
             cellPodpisy.AddParagraph("Faktura bez podpisu odbiorcy faktury ");
             cellPodpisy = rowPodpisy.Cells[1];
             cellPodpisy.AddParagraph("Osoba upoważniona do wystawienia faktury ");
-            
+
 
             Row rowPodpisy2 = tablePodpisy.AddRow();
             Cell cellPodpisy2 = rowPodpisy2.Cells[0];
@@ -543,32 +590,459 @@ namespace Faktury2020
             cellPodpisy2.AddParagraph(" ");
 
             cellPodpisy2 = rowPodpisy.Cells[1];
-            cellPodpisy2.AddParagraph("\n \n Tomasz Chajduga");
+            cellPodpisy2.AddParagraph("\n \n " + txtosobaUpowaznionaDoWystawieniaFaktury.Text);
 
             doc.LastSection.Add(tablePodpisy);
-
 
             // Create a renderer and prepare (=layout) the document
             MigraDoc.Rendering.DocumentRenderer docRenderer = new MigraDoc.Rendering.DocumentRenderer(doc);
             docRenderer.PrepareDocument();
             gfx.MUH = PdfFontEncoding.Unicode;
-   
+
             docRenderer.RenderPage(gfx, 1);
 
-
-            const string filename = "HelloWorld4.pdf"; //When drawing is done, write the file
+            string filename = txtnumerFaktury.Text + ".pdf"; //When drawing is done, write the file
             document.Save(filename); // Save the document...
-
-            //Process.Start(filename); // ...and start a viewer.
         }
-
-        private void Button_Click_2(object sender, RoutedEventArgs e)
+        private void txtdataWystawienia2_TextChanged(object sender, TextChangedEventArgs e)
         {
+            txtdataWystawienia.Text = txtdataWystawienia2.Text;
+        }
+        private void txtdataSprzedazy2_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            txtdataSprzedazy.Text = txtdataSprzedazy2.Text;
+        }
+
+        private void WczytajzBazy(int numerzListy)
+        {
+            try
+            {//TUTAJ RTY - CATCH DLA OPCJI BRAK BAZY
+                using (var reader = new StreamReader("xb_baza.csv")) //"path\\to\\file.csv"
+                {
+                    using (var csvReader = new CsvReader(reader, CultureInfo.InvariantCulture))
+                    {
+                        var listaAll = csvReader.GetRecords<Faktura>().ToList();
+                        wczytajProformyDlaDanegoMca();
+                        //TUTAJ ZARAZ DODAMY OPCJĘ DLA WCZYTAJ KOŃCOWE
+                        if (optAll.IsChecked == true)
+                        {
+                            string pomocniczy;
+                            txtnumerFaktury.Text = "-" + listaAll[numerzListy].stalaCzescNumeruFaktury + "-" + txtdataSprzedazy.Text;
+                            if (listaAll[numerzListy].sposobZaplaty == "P" | listaAll[numerzListy].sposobZaplaty == "P") { pomocniczy = "przelew"; }
+                            else if (listaAll[numerzListy].sposobZaplaty == "G" | listaAll[numerzListy].sposobZaplaty == "g") { pomocniczy = "GOTÓWKA"; }
+                            else if (listaAll[numerzListy].sposobZaplaty == "PG" | listaAll[numerzListy].sposobZaplaty == "pg") { pomocniczy = "przelew/GOTÓWKA"; }
+                            else { pomocniczy = "BŁĄD"; }
+                            txtsposobZaplaty.Text = pomocniczy;
+                            txtnazwaNabywcy.Text = listaAll[numerzListy].nazwaNabywcy;
+                            txtulicaNabywcy.Text = listaAll[numerzListy].ulicaNabywcy;
+                            txtmiastoiKodNabywcy.Text = listaAll[numerzListy].miastoiKodNabywcy;
+                            txtnipNabywcy.Text = listaAll[numerzListy].nipNabywcy;
+                            if (listaAll[numerzListy].wybranyOkres == "1") { pomocniczy = "1-MIESIĄC"; }
+                            else if (listaAll[numerzListy].wybranyOkres == "3") { pomocniczy = "3-MIESIĄCE"; }
+                            else if (listaAll[numerzListy].wybranyOkres == "6") { pomocniczy = "6-MIESIĘCY"; }
+                            else if (listaAll[numerzListy].wybranyOkres == "12") { pomocniczy = "12-MIESIĘCY"; }
+                            else { pomocniczy = "BŁĄD"; }
+                            txtnazwaTowaruLubUslugi1.Text = "Abonament xBiuro - pakiet " + listaAll[numerzListy].wybranyPakiet + " na " + pomocniczy;
+                            txtilosc1.Text = listaAll[numerzListy].ilosc;
+                            txtwartoscJednostkowaBrutto1.Text = listaAll[numerzListy].wartoscJednostkowaBrutto;
+                            txtwartoscBrutto1.Text = listaAll[numerzListy].wartoscBrutto;
+                            txtrazem.Text = listaAll[numerzListy].razem;
+                            pomocniczy = listaAll[numerzListy].razem.Substring(listaAll[numerzListy].razem.Length - 2) + "/100 groszy brutto";
+                            decimal pomocniczyDec = decimal.Parse(listaAll[numerzListy].razem);
+                            pomocniczyDec = Math.Truncate(pomocniczyDec);
+                            int pomocniczyInt = Decimal.ToInt32(pomocniczyDec);
+                            txtslownie.Text = "SŁOWNIE: " + Formatowanie.LiczbaSlownie(pomocniczyInt) + " " + Formatowanie.WalutaSlownie(pomocniczyInt, "PLN") + " i " + pomocniczy;
+                            txtslownie.Text = txtslownie.Text.ToUpper();
+
+                            lblKolejna.Content = "Dokument " + (++numerzListy).ToString() + " z " + (listaAll.Count).ToString();
+                            btnZapisz.IsEnabled = true;
+                            if (numerzListy == 1) btnBack.IsEnabled = false;
+                            else btnBack.IsEnabled = true;
+                            if (listaAll.Count == numerzListy) btnNext.IsEnabled = false;
+
+                            else btnNext.IsEnabled = true;
+                        }
+                        else if (optProformy.IsChecked == true)
+                        {
+                            string pomocniczy;
+                            try
+                            {
+                                txtnumerFaktury.Text = "1-PROFORMA-" + proformyDlaDanegoMiesiaca[numerzListy].stalaCzescNumeruFaktury + "-" + txtdataSprzedazy.Text;
+                                if (proformyDlaDanegoMiesiaca[numerzListy].sposobZaplaty == "P" | proformyDlaDanegoMiesiaca[numerzListy].sposobZaplaty == "P") { pomocniczy = "przelew"; }
+                                else if (proformyDlaDanegoMiesiaca[numerzListy].sposobZaplaty == "G" | proformyDlaDanegoMiesiaca[numerzListy].sposobZaplaty == "g") { pomocniczy = "GOTÓWKA"; }
+                                else if (proformyDlaDanegoMiesiaca[numerzListy].sposobZaplaty == "PG" | proformyDlaDanegoMiesiaca[numerzListy].sposobZaplaty == "pg") { pomocniczy = "przelew/GOTÓWKA"; }
+                                else { pomocniczy = "BŁĄD"; }
+                                txtsposobZaplaty.Text = pomocniczy;
+                                txtnazwaNabywcy.Text = proformyDlaDanegoMiesiaca[numerzListy].nazwaNabywcy;
+                                txtulicaNabywcy.Text = proformyDlaDanegoMiesiaca[numerzListy].ulicaNabywcy;
+                                txtmiastoiKodNabywcy.Text = proformyDlaDanegoMiesiaca[numerzListy].miastoiKodNabywcy;
+                                txtnipNabywcy.Text = proformyDlaDanegoMiesiaca[numerzListy].nipNabywcy;
+                                if (proformyDlaDanegoMiesiaca[numerzListy].wybranyOkres == "1") { pomocniczy = "1-MIESIĄC"; }
+                                else if (proformyDlaDanegoMiesiaca[numerzListy].wybranyOkres == "3") { pomocniczy = "3-MIESIĄCE"; }
+                                else if (proformyDlaDanegoMiesiaca[numerzListy].wybranyOkres == "6") { pomocniczy = "6-MIESIĘCY"; }
+                                else if (proformyDlaDanegoMiesiaca[numerzListy].wybranyOkres == "12") { pomocniczy = "12-MIESIĘCY"; }
+                                else { pomocniczy = "BŁĄD"; }
+                                txtnazwaTowaruLubUslugi1.Text = "Abonament xBiuro - pakiet " + proformyDlaDanegoMiesiaca[numerzListy].wybranyPakiet + " na " + pomocniczy;
+                                txtilosc1.Text = proformyDlaDanegoMiesiaca[numerzListy].ilosc;
+                                txtwartoscJednostkowaBrutto1.Text = proformyDlaDanegoMiesiaca[numerzListy].wartoscJednostkowaBrutto;
+                                txtwartoscBrutto1.Text = proformyDlaDanegoMiesiaca[numerzListy].wartoscBrutto;
+                                txtrazem.Text = proformyDlaDanegoMiesiaca[numerzListy].razem;
+                                txtZaplacono.Text = proformyDlaDanegoMiesiaca[numerzListy].razem;
+                                txtPozostaloDoZaplaty.Text = proformyDlaDanegoMiesiaca[numerzListy].razem;
+                                pomocniczy = proformyDlaDanegoMiesiaca[numerzListy].razem.Substring(proformyDlaDanegoMiesiaca[numerzListy].razem.Length - 2) + "/100 groszy brutto";
+                                decimal pomocniczyDec = decimal.Parse(proformyDlaDanegoMiesiaca[numerzListy].razem);
+                                pomocniczyDec = Math.Truncate(pomocniczyDec);
+                                int pomocniczyInt = Decimal.ToInt32(pomocniczyDec);
+                                txtslownie.Text = "SŁOWNIE: " + Formatowanie.LiczbaSlownie(pomocniczyInt) + " " + Formatowanie.WalutaSlownie(pomocniczyInt, "PLN") + " i " + pomocniczy;
+                                txtslownie.Text = txtslownie.Text.ToUpper();
+
+                                lblKolejna.Content = "Dokument " + (++numerzListy).ToString() + " z " + (proformyDlaDanegoMiesiaca.Count).ToString();
+                                btnZapisz.IsEnabled = true;
+                                if (numerzListy == 1) btnBack.IsEnabled = false;
+                                else btnBack.IsEnabled = true;
+                                Label1.Content = proformyDlaDanegoMiesiaca.Count.ToString();
+                                if (proformyDlaDanegoMiesiaca.Count == numerzListy) btnNext.IsEnabled = false;
+                                else btnNext.IsEnabled = true;
+                            }
+                            catch
+                            {
+                                wyzerujDesigner();
+                                btnZapisz.IsEnabled = false;
+                                MessageBox.Show("Nie ma takiej pozycji w bazie", "Faktury 2020", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                            }
+                        }
+                        else if (optKoncowe.IsChecked == true)
+                        {
+                            //zrobić, by dużo zależało od daty zapłaty
+                            string pomocniczy;
+                            try
+                            { 
+                                txtnumerFaktury.Text = "Faktura 1-" + proformyDlaDanegoMiesiaca[numerzListy].stalaCzescNumeruFaktury + "-" + txtdataSprzedazy.Text;
+                                if (proformyDlaDanegoMiesiaca[numerzListy].sposobZaplaty == "P" | proformyDlaDanegoMiesiaca[numerzListy].sposobZaplaty == "P") { pomocniczy = "przelew"; }
+                                else if (proformyDlaDanegoMiesiaca[numerzListy].sposobZaplaty == "G" | proformyDlaDanegoMiesiaca[numerzListy].sposobZaplaty == "g") { pomocniczy = "GOTÓWKA"; }
+                                else if (proformyDlaDanegoMiesiaca[numerzListy].sposobZaplaty == "PG" | proformyDlaDanegoMiesiaca[numerzListy].sposobZaplaty == "pg") { pomocniczy = "przelew/GOTÓWKA"; }
+                                else { pomocniczy = "BŁĄD"; }
+                                txtsposobZaplaty.Text = pomocniczy;
+                                txtnazwaNabywcy.Text = proformyDlaDanegoMiesiaca[numerzListy].nazwaNabywcy;
+                                txtulicaNabywcy.Text = proformyDlaDanegoMiesiaca[numerzListy].ulicaNabywcy;
+                                txtmiastoiKodNabywcy.Text = proformyDlaDanegoMiesiaca[numerzListy].miastoiKodNabywcy;
+                                txtnipNabywcy.Text = proformyDlaDanegoMiesiaca[numerzListy].nipNabywcy;
+                                if (proformyDlaDanegoMiesiaca[numerzListy].wybranyOkres == "1") { pomocniczy = "1-MIESIĄC"; }
+                                else if (proformyDlaDanegoMiesiaca[numerzListy].wybranyOkres == "3") { pomocniczy = "3-MIESIĄCE"; }
+                                else if (proformyDlaDanegoMiesiaca[numerzListy].wybranyOkres == "6") { pomocniczy = "6-MIESIĘCY"; }
+                                else if (proformyDlaDanegoMiesiaca[numerzListy].wybranyOkres == "12") { pomocniczy = "12-MIESIĘCY"; }
+                                else { pomocniczy = "BŁĄD"; }
+                                txtnazwaTowaruLubUslugi1.Text = "Abonament xBiuro - pakiet " + proformyDlaDanegoMiesiaca[numerzListy].wybranyPakiet + " na " + pomocniczy;
+                                txtilosc1.Text = proformyDlaDanegoMiesiaca[numerzListy].ilosc;
+                                txtwartoscJednostkowaBrutto1.Text = proformyDlaDanegoMiesiaca[numerzListy].wartoscJednostkowaBrutto;
+                                txtwartoscBrutto1.Text = proformyDlaDanegoMiesiaca[numerzListy].wartoscBrutto;
+                                txtrazem.Text = proformyDlaDanegoMiesiaca[numerzListy].razem;
+                                txtZaplacono.Text= proformyDlaDanegoMiesiaca[numerzListy].razem;
+                                txtPozostaloDoZaplaty.Text = "0,00";
+
+                                pomocniczy = proformyDlaDanegoMiesiaca[numerzListy].razem.Substring(proformyDlaDanegoMiesiaca[numerzListy].razem.Length - 2) + "/100 groszy brutto";
+                                decimal pomocniczyDec = decimal.Parse(proformyDlaDanegoMiesiaca[numerzListy].razem);
+                                pomocniczyDec = Math.Truncate(pomocniczyDec);
+                                int pomocniczyInt = Decimal.ToInt32(pomocniczyDec);
+                                txtslownie.Text = "SŁOWNIE: " + Formatowanie.LiczbaSlownie(pomocniczyInt) + " " + Formatowanie.WalutaSlownie(pomocniczyInt, "PLN") + " i " + pomocniczy;
+                                txtslownie.Text = txtslownie.Text.ToUpper();
+
+                                lblKolejna.Content = "Dokument " + (++numerzListy).ToString() + " z " + (proformyDlaDanegoMiesiaca.Count).ToString();
+                                btnZapisz.IsEnabled = true;
+                                if (numerzListy == 1) btnBack.IsEnabled = false;
+                                else btnBack.IsEnabled = true;
+                                if (proformyDlaDanegoMiesiaca.Count == numerzListy) btnNext.IsEnabled = false;
+
+                                else btnNext.IsEnabled = true;
+                            }
+                            catch
+                            {
+                                wyzerujDesigner();
+                                btnZapisz.IsEnabled = false;
+                                MessageBox.Show("Nie ma takiej pozycji w bazie", "Faktury 2020", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                                btnZapisz.IsEnabled = false;
+                            }
+                        }
+                    }
+
+                }
+            }
+            catch (FileNotFoundException)
+            {
+                MessageBox.Show("Brak bazy danych w folderze programu. Umieść plik xb_baza.csv folderze programu i spróbuj ponownie.", "Faktury 2020", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            }
+        }
+        private void wyzerujDesigner()
+        {
+            txtnumerFaktury.Text = "---";
+            txtsposobZaplaty.Text = "---";
+            txtnazwaNabywcy.Text = "---";
+            txtulicaNabywcy.Text = "---";
+            txtmiastoiKodNabywcy.Text = "---";
+            txtnipNabywcy.Text = "---";
+            txtnazwaTowaruLubUslugi1.Text = "---";
+            txtilosc1.Text = "---";
+            txtwartoscJednostkowaBrutto1.Text = "---";
+            txtwartoscBrutto1.Text = "---";
+            txtrazem.Text = "---";
+            txtslownie.Text = "SŁOWNIE: " + "---";
+            lblKolejna.Content = "Brak danych w bazie spełniających kryteria";
+            txtZaplacono.Text= "---";
+            txtPozostaloDoZaplaty.Text = "---";
+        }
+
+        private void btnNext_Click(object sender, RoutedEventArgs e)
+        {
+            WczytajzBazy(++numerzListy);
+        }
+        private void btnBack_Click(object sender, RoutedEventArgs e)
+        {
+            WczytajzBazy(--numerzListy);
+        }
+        private void btnZapisz_Click(object sender, RoutedEventArgs e)
+        {
+            //NAJPIERW WSTAWIAMY DATĘ PŁATNOŚCI
+            //SPRAWDZAMY CZY DATA PŁATNOŚCI JEST PÓŹNIEJSZA OD DATY WYSTAWIANIA ->JEŚLI TAK TO KWOTA POZOSTAJE DO ZAPŁATY
+            //JEŚLI NIE TO KWOTA JEST 'ZAPŁACONO'
+            //JESLI DATA ZAPŁATY JEST Z WCZEŚJENISZEGO MIESIĄCA NIŻ DATA SPRZEDAŻY TO WYSTAWINA JEST FAKTURA ZALICZKA I TO W SPOSÓB TAKI, ŻEBY USER JĄ WIDZIAŁ
+
+              
+               // DateTime date1 = picker.SelectedDate;
+            if (optKoncowe.IsChecked == true)
+                {
+                if (txtterminPlatnosci.Text == "")
+                {
+                    MessageBox.Show("Proszę wprowadzić faktyczną datę opłacenia faktury (pole: Termin zapłaty) w formacie DD-MM-RRRR", "Faktury 2020", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+
+                    if (czyTerazFakturaZaliczkowa())
+                    {
+                        string pomocniczy = "";
+                        if (txtterminPlatnosci.Text.Substring(3, 1) == "0")
+                        {
+                            pomocniczy = txtterminPlatnosci.Text.Substring(4, 6);
+                        }
+                        else
+                        {
+                            pomocniczy = txtterminPlatnosci.Text.Substring(3, 7);
+                        }
+
+                        txtuwagi2.Text = "Dokument wystawiany do Faktura zaliczka 1-" + proformyDlaDanegoMiesiaca[numerzListy].stalaCzescNumeruFaktury + "-" + pomocniczy + " z dnia " + txtterminPlatnosci.Text;
+                        //jak tutaj: czyTerazFakturaZaliczkowa()odcina z daty dzień, z pkt księgowości jest on nieistotny
+                        generujPDF();//generujemy fakturę końcową z adnotacją o wystawionej do niej fakturze zaliczkowej
+
+                        //poniżej zmiana danych na właściwe do wygenerowania faktury zaliczkowej
+                        txtnumerFaktury.Text = "Faktura zaliczka 1-" + proformyDlaDanegoMiesiaca[numerzListy].stalaCzescNumeruFaktury + "-" + pomocniczy;
+                        txtdataWystawienia.Text = txtterminPlatnosci.Text;
+                        txtuwagi2.Text = "";
+                        generujPDF();//Generujemy tym razem fakturę zaliczkową
+                        MessageBox.Show("Do wystawionej faktury końcowej została automatycznie wygenerowana faktura zaliczkowa.", "Faktury 2020", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    else
+                    {
+                        txtuwagi2.Text = "";
+                        generujPDF();//generujemy fakturę końcową bez adnotacji o wystawionej do niej fakturze zaliczkowej
+                    }
+                }
+            }
+        }
+        //PONIŻSZA metoda zwraca true, jeżeli miesiąc zapłaty jest wcześniejszy niż termin 
+        //sprzedaży - czyli, gdy jest potrzebna faktura zaliczka
+        //działa ona dla dat w formacie Daty sprzedaży: MM-RRRR oraz Daty zapłaty: DD-MM-RRRR
+        public bool czyTerazFakturaZaliczkowa() 
+        {
+            
+            string sterminPlatnosci = txtterminPlatnosci.Text;
+            string sdataSprzedazy = txtdataSprzedazy.Text;
+
+            sterminPlatnosci = sterminPlatnosci.Substring(3, 7).ToString();//odcina z daty dzień, z pkt księgowości jest on nieistotny
+
+            DateTime terminPlatnosci = Convert.ToDateTime(sdataSprzedazy);
+            DateTime dataSprzedazy = Convert.ToDateTime(sterminPlatnosci);
+            
+            int result = DateTime.Compare(dataSprzedazy, terminPlatnosci);
+            // Label1.Content = terminPlatnosci.ToString();
+            if (result < 0) return true;
+            else return false;
 
         }
+
+        public bool czyTerazProforma(Faktura faktura) //mechanizm sprawdzający czy w danym miesiącu kończy się okres abonamentowy
+        {
+            int p1 = 0;
+            int p2 = 0;
+              
+            p1 = int.Parse(faktura.startPelnyMiesiac);
+            p2 = int.Parse(faktura.wybranyOkres);
+
+            int LicznikPomocniczy = p1;
+
+            int miesiacA, miesiacB, miesiacC, miesiacD;
+            int miesiacSprzedazyLiczba = 0;
+
+            if (txtdataSprzedazy.Text.Length == 6)
+            {
+                miesiacSprzedazyLiczba = int.Parse(txtdataSprzedazy.Text.Remove(1).ToString());
+            }
+            else if (txtdataSprzedazy.Text.Length == 7)
+            {
+                miesiacSprzedazyLiczba = int.Parse(txtdataSprzedazy.Text.Remove(2).ToString());
+            }
+            
+            if (faktura.wybranyOkres == "1")
+            {
+                return true; //jest 12 punktów (tj. momentów) płatności w roku, ponieważ proformy genruję raz na miesiąc, to za każdym razem jest true
+            }
+            else if (faktura.wybranyOkres == "3")
+            {
+                miesiacA = LicznikPomocniczy + p2; //są 4 punkty (tj. miesiące) w roku , kiedy należy wystawić taką proformę    
+                miesiacB = LicznikPomocniczy + p2 + p2;//7
+                miesiacC = LicznikPomocniczy + p2 + p2 + p2;//itd
+                miesiacD = LicznikPomocniczy + p2 + p2 + p2 + p2;
+                // Label1.Content = miesiacB;
+                if (miesiacA > 12) miesiacA = miesiacA - 12; //to nie zajdzie w opcji okresu abonamntowego 3mce ale kod niech będzie jak najbardziej uniwersalny
+                if (miesiacB > 12) miesiacB = miesiacB - 12;
+                if (miesiacC > 12) miesiacC = miesiacC - 12;
+                if (miesiacD > 12) miesiacD = miesiacD - 12;
+                if ((miesiacA == miesiacSprzedazyLiczba) ^ (miesiacB == miesiacSprzedazyLiczba) ^ (miesiacC == miesiacSprzedazyLiczba) ^ (miesiacD == miesiacSprzedazyLiczba))
+                {
+                    return true;
+                }
+            }
+            else if (faktura.wybranyOkres == "6")
+            {
+                miesiacA = LicznikPomocniczy + p2; //są 2 punkty (tj. miesiące) w roku , kiedy należy wystawić taką proformę
+                miesiacB = LicznikPomocniczy + p2 + p2;
+                if (miesiacA > 12) miesiacA = miesiacA - 12;
+                if (miesiacB > 12) miesiacB = miesiacB - 12;
+                // int miesiacSprzedazyLiczba = int.Parse(txtdataSprzedazy.Text.Substring(txtdataSprzedazy.Text.Length - 5));
+                if ((miesiacA == miesiacSprzedazyLiczba) ^ (miesiacB == miesiacSprzedazyLiczba))
+                {
+                    return true;
+                }
+            }
+            if (faktura.wybranyOkres == "12" && p1 == miesiacSprzedazyLiczba)
+                    {
+                // int miesiacSprzedazyLiczba = int.Parse(txtdataSprzedazy.Text.Substring(txtdataSprzedazy.Text.Length - 5));                         
+                return true;
+            } 
+            else
+            {
+                return false;
+            }
+        }
+
+        public void wczytajProformyDlaDanegoMca()
+        {
+            proformyDlaDanegoMiesiaca.Clear();
+            using (var reader = new StreamReader("xb_baza.csv")) //"path\\to\\file.csv"
+            {
+                using (var csvReader = new CsvReader(reader, CultureInfo.InvariantCulture))
+                {
+                    var faktury = csvReader.GetRecords<Faktura>();//.ToList();
+                    foreach (var faktura in faktury)
+                    {
+                        if (czyTerazProforma(faktura))
+                        {
+                            string pomocniczy;
+                            txtnumerFaktury.Text = "1-PROFORMA-" + faktura.stalaCzescNumeruFaktury + "-" + txtdataSprzedazy.Text;
+                            if (faktura.sposobZaplaty == "P" | faktura.sposobZaplaty == "P") { pomocniczy = "przelew"; }
+                            else if (faktura.sposobZaplaty == "G" | faktura.sposobZaplaty == "g") { pomocniczy = "GOTÓWKA"; }
+                            else if (faktura.sposobZaplaty == "PG" | faktura.sposobZaplaty == "pg") { pomocniczy = "przelew/GOTÓWKA"; }
+                            else { pomocniczy = "BŁĄD"; }
+                            txtsposobZaplaty.Text = pomocniczy;
+                            txtnazwaNabywcy.Text = faktura.nazwaNabywcy;
+                            txtulicaNabywcy.Text = faktura.ulicaNabywcy;
+                            txtmiastoiKodNabywcy.Text = faktura.miastoiKodNabywcy;
+                            txtnipNabywcy.Text = faktura.nipNabywcy;
+                            if (faktura.wybranyOkres == "1") { pomocniczy = "1-MIESIĄC"; }
+                            else if (faktura.wybranyOkres == "3") { pomocniczy = "3-MIESIĄCE"; }
+                            else if (faktura.wybranyOkres == "6") { pomocniczy = "6-MIESIĘCY"; }
+                            else if (faktura.wybranyOkres == "12") { pomocniczy = "12-MIESIĘCY"; }
+                            else { pomocniczy = "BŁĄD"; }
+                            txtnazwaTowaruLubUslugi1.Text = "Abonament xBiuro - pakiet " + faktura.wybranyPakiet + " na " + pomocniczy;
+                            txtilosc1.Text = faktura.ilosc;
+                            txtwartoscJednostkowaBrutto1.Text = faktura.wartoscJednostkowaBrutto;
+                            txtwartoscBrutto1.Text = faktura.wartoscBrutto;
+                            txtrazem.Text = faktura.razem;
+                            pomocniczy = faktura.razem.Substring(faktura.razem.Length - 2) + "/100 groszy brutto";
+                            decimal pomocniczyDec = decimal.Parse(faktura.razem);
+                            pomocniczyDec = Math.Truncate(pomocniczyDec);
+                            int pomocniczyInt = Decimal.ToInt32(pomocniczyDec);
+                            txtslownie.Text = "SŁOWNIE: " + Formatowanie.LiczbaSlownie(pomocniczyInt) + " " + Formatowanie.WalutaSlownie(pomocniczyInt, "PLN") + " i " + pomocniczy;
+                            txtslownie.Text = txtslownie.Text.ToUpper();
+
+                            proformyDlaDanegoMiesiaca.Add(faktura);
+                            //if (faktura.czyZaplacono == "T") txtZaplacono.Text = faktura.razem;
+                            //else if (faktura.czyZaplacono == "N") txtPozostaloDoZaplaty.Text = faktura.razem;
+                        }
+                    }
+                }
+            }
+        }
+
+        private void txtdataWystawienia_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            txtdataWystawienia2.Text = txtdataWystawienia.Text;
+        }
+
+        private void btnWyszukaj_Click(object sender, RoutedEventArgs e)
+        {
+            if (optProformy.IsChecked==true)
+            {
+                numerzListy = 0;
+                WczytajzBazy(numerzListy);
+            } 
+            else if (optKoncowe.IsChecked == true)
+            {
+                numerzListy = 0;
+                txtterminPlatnosci.Text = "";
+                WczytajzBazy(numerzListy);
+            } else if (optAll.IsChecked == true)
+            {
+                numerzListy = 0;
+                WczytajzBazy(numerzListy);
+            }
+            else
+            {
+                MessageBox.Show("Proszę zaznaczyć jedną z powyższych opcji", "Faktury 2020", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
+        private void txtterminPlatnosciCopy_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            txtterminPlatnosci.Text = txtterminPlatnosciCopy.Text;
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            //UWAGA TO DZIAŁA!!!
+            var message = new MimeMessage();
+            var bodyBuilder = new BodyBuilder();
+
+            // from
+            message.From.Add(new MailboxAddress("from_name", "teraz@xbiuro.com"));
+            // to
+            message.To.Add(new MailboxAddress("to_name", "loker7@wp.pl"));
+            // reply to
+            message.ReplyTo.Add(new MailboxAddress("reply_name", "loker7@wp.pl"));
+
+            message.Subject = "MAil testowy z aplikacji";
+            bodyBuilder.HtmlBody = "html body";
+            message.Body = bodyBuilder.ToMessageBody();
+            bodyBuilder.Attachments.Add(@"SKM_C.pdf"); //tu może być pełna ścieżka
+            message.Body = bodyBuilder.ToMessageBody();
+
+
+            var client = new SmtpClient();
+
+            client.ServerCertificateValidationCallback = (s, c, h, e) => true;
+            client.Connect("loker7.mail.ncse.pl", 465, SecureSocketOptions.SslOnConnect);
+            client.Authenticate("teraz@xbiuro.com", "123Test");
+            client.Send(message);
+            client.Disconnect(true);
+        }
     }
-    }
-
-
-
-
+}
