@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Faktury2020
+namespace Invoices2020
 {
 
-    public class Faktura
+    public class Invoice
     {
         // private string miejsce_wystawienia;
 

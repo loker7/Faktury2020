@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Faktury2020
+namespace Invoices2020
 {
-    public class Formatowanie
+    public class AmointInWords
     {
         private static string zero = "zero";
         private static string[] jednosci = { "", " jeden ", " dwa ", " trzy ",

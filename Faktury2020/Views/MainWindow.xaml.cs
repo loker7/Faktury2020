@@ -22,7 +22,7 @@ using MailKit.Net.Smtp;
 using MimeKit;
 using MailKit.Security;
 
-namespace Faktury2020
+namespace Invoices2020
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -33,7 +33,7 @@ namespace Faktury2020
         int numerzListy=0;
         public static bool uwagaoZaliczce;
         public static bool zaliczka;
-              List<Faktura> proformyDlaDanegoMiesiaca = new List<Faktura>();
+              List<Invoice> proformyDlaDanegoMiesiaca = new List<Invoice>();
         public MainWindow()
         {
             InitializeComponent();
@@ -164,7 +164,7 @@ namespace Faktury2020
                 {
                     using (var csvReader = new CsvReader(reader, CultureInfo.InvariantCulture))
                     {
-                        var faktury = csvReader.GetRecords<Faktura>();//.ToList();
+                        var faktury = csvReader.GetRecords<Invoice>();//.ToList();
                         foreach (var faktura in faktury)
                         {
                             if (czyTerazProforma(faktura))
@@ -195,7 +195,7 @@ namespace Faktury2020
                                 decimal pomocniczyDec = decimal.Parse(faktura.razem);
                                 pomocniczyDec = Math.Truncate(pomocniczyDec);
                                 int pomocniczyInt = Decimal.ToInt32(pomocniczyDec);
-                                txtslownie.Text = "SŁOWNIE: " + Formatowanie.LiczbaSlownie(pomocniczyInt) + " " + Formatowanie.WalutaSlownie(pomocniczyInt, "PLN") + " i " + pomocniczy;
+                                txtslownie.Text = "SŁOWNIE: " + AmointInWords.LiczbaSlownie(pomocniczyInt) + " " + AmointInWords.WalutaSlownie(pomocniczyInt, "PLN") + " i " + pomocniczy;
                                 txtslownie.Text = txtslownie.Text.ToUpper();
 
                                 generujPDF();
@@ -219,7 +219,7 @@ namespace Faktury2020
 
         private void generujPDF()
         {
-            Faktura faktura = new Faktura();
+            Invoice faktura = new Invoice();
             // Books books = new Books();
 
             PdfDocument document = new PdfDocument(); // Create a new PDF document
@@ -621,7 +621,7 @@ namespace Faktury2020
                 {
                     using (var csvReader = new CsvReader(reader, CultureInfo.InvariantCulture))
                     {
-                        var listaAll = csvReader.GetRecords<Faktura>().ToList();
+                        var listaAll = csvReader.GetRecords<Invoice>().ToList();
                         wczytajProformyDlaDanegoMca();
                         //TUTAJ ZARAZ DODAMY OPCJĘ DLA WCZYTAJ KOŃCOWE
                         if (optAll.IsChecked == true)
@@ -651,7 +651,7 @@ namespace Faktury2020
                             decimal pomocniczyDec = decimal.Parse(listaAll[numerzListy].razem);
                             pomocniczyDec = Math.Truncate(pomocniczyDec);
                             int pomocniczyInt = Decimal.ToInt32(pomocniczyDec);
-                            txtslownie.Text = "SŁOWNIE: " + Formatowanie.LiczbaSlownie(pomocniczyInt) + " " + Formatowanie.WalutaSlownie(pomocniczyInt, "PLN") + " i " + pomocniczy;
+                            txtslownie.Text = "SŁOWNIE: " + AmointInWords.LiczbaSlownie(pomocniczyInt) + " " + AmointInWords.WalutaSlownie(pomocniczyInt, "PLN") + " i " + pomocniczy;
                             txtslownie.Text = txtslownie.Text.ToUpper();
 
                             lblKolejna.Content = "Dokument " + (++numerzListy).ToString() + " z " + (listaAll.Count).ToString();
@@ -693,7 +693,7 @@ namespace Faktury2020
                                 decimal pomocniczyDec = decimal.Parse(proformyDlaDanegoMiesiaca[numerzListy].razem);
                                 pomocniczyDec = Math.Truncate(pomocniczyDec);
                                 int pomocniczyInt = Decimal.ToInt32(pomocniczyDec);
-                                txtslownie.Text = "SŁOWNIE: " + Formatowanie.LiczbaSlownie(pomocniczyInt) + " " + Formatowanie.WalutaSlownie(pomocniczyInt, "PLN") + " i " + pomocniczy;
+                                txtslownie.Text = "SŁOWNIE: " + AmointInWords.LiczbaSlownie(pomocniczyInt) + " " + AmointInWords.WalutaSlownie(pomocniczyInt, "PLN") + " i " + pomocniczy;
                                 txtslownie.Text = txtslownie.Text.ToUpper();
 
                                 lblKolejna.Content = "Dokument " + (++numerzListy).ToString() + " z " + (proformyDlaDanegoMiesiaca.Count).ToString();
@@ -744,7 +744,7 @@ namespace Faktury2020
                                 decimal pomocniczyDec = decimal.Parse(proformyDlaDanegoMiesiaca[numerzListy].razem);
                                 pomocniczyDec = Math.Truncate(pomocniczyDec);
                                 int pomocniczyInt = Decimal.ToInt32(pomocniczyDec);
-                                txtslownie.Text = "SŁOWNIE: " + Formatowanie.LiczbaSlownie(pomocniczyInt) + " " + Formatowanie.WalutaSlownie(pomocniczyInt, "PLN") + " i " + pomocniczy;
+                                txtslownie.Text = "SŁOWNIE: " + AmointInWords.LiczbaSlownie(pomocniczyInt) + " " + AmointInWords.WalutaSlownie(pomocniczyInt, "PLN") + " i " + pomocniczy;
                                 txtslownie.Text = txtslownie.Text.ToUpper();
 
                                 lblKolejna.Content = "Dokument " + (++numerzListy).ToString() + " z " + (proformyDlaDanegoMiesiaca.Count).ToString();
@@ -869,7 +869,7 @@ namespace Faktury2020
 
         }
 
-        public bool czyTerazProforma(Faktura faktura) //mechanizm sprawdzający czy w danym miesiącu kończy się okres abonamentowy
+        public bool czyTerazProforma(Invoice faktura) //mechanizm sprawdzający czy w danym miesiącu kończy się okres abonamentowy
         {
             int p1 = 0;
             int p2 = 0;
@@ -941,7 +941,7 @@ namespace Faktury2020
             {
                 using (var csvReader = new CsvReader(reader, CultureInfo.InvariantCulture))
                 {
-                    var faktury = csvReader.GetRecords<Faktura>();//.ToList();
+                    var faktury = csvReader.GetRecords<Invoice>();//.ToList();
                     foreach (var faktura in faktury)
                     {
                         if (czyTerazProforma(faktura))
@@ -971,7 +971,7 @@ namespace Faktury2020
                             decimal pomocniczyDec = decimal.Parse(faktura.razem);
                             pomocniczyDec = Math.Truncate(pomocniczyDec);
                             int pomocniczyInt = Decimal.ToInt32(pomocniczyDec);
-                            txtslownie.Text = "SŁOWNIE: " + Formatowanie.LiczbaSlownie(pomocniczyInt) + " " + Formatowanie.WalutaSlownie(pomocniczyInt, "PLN") + " i " + pomocniczy;
+                            txtslownie.Text = "SŁOWNIE: " + AmointInWords.LiczbaSlownie(pomocniczyInt) + " " + AmointInWords.WalutaSlownie(pomocniczyInt, "PLN") + " i " + pomocniczy;
                             txtslownie.Text = txtslownie.Text.ToUpper();
 
                             proformyDlaDanegoMiesiaca.Add(faktura);
