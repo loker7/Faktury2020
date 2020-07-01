@@ -21,6 +21,7 @@ using System.Security.Cryptography.X509Certificates;
 using MailKit.Net.Smtp;
 using MimeKit;
 using MailKit.Security;
+using Invoices2020.ViewModels;
 
 namespace Invoices2020
 {
@@ -36,9 +37,33 @@ namespace Invoices2020
               List<Invoice> proformyDlaDanegoMiesiaca = new List<Invoice>();
         public MainWindow()
         {
+            var viewModel = new ViewModel();
+
+            viewModel.numerFaktury = "Faktura proforma 1-TEST-2-2020";
+            viewModel.sposobZaplaty = "GOTÓWKA";
+            viewModel.nazwaNabywcy = "Aldona Nieznanna";
+            viewModel.ulicaNabywcy = "ul Nieznana 20";
+            viewModel.miastoiKodNabywcy = "40-085 Katowice";
+            viewModel.nipNabywcy = "NIP 000-000-00-00";
+            viewModel.nazwaTowaruLubUslugi = "Abonament xBiuro - pakiet STANDARD na 12-MIESIĘCY";
+            viewModel.ilosc = "1";
+            viewModel.wartoscJednostkowaBrutto = "723,24";
+            viewModel.wartoscBrutto = "723,24";
+            viewModel.slownie = "KWOTA SŁOWNIE";
+            viewModel.Sum = "723,24";
+            viewModel.Paid = "0,00";
+            viewModel.LeftToPay = "0,00";
+
+            viewModel.additional2 = "Dokument wystawiany do Faktura zaliczka 1-NAZWA-MC....";
+
+            DataContext = viewModel;
             InitializeComponent();
+
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
             txtdataWystawienia.Text = txtdataWystawienia2.Text;
+
+            viewModel.nazwaNabywcy = "Aldona NNNNNXXX"; 
+          //  viewModel.OnPropertyChanged(nameof(ViewModel.nazwaNabywcy)); //usuwam bo dodałem ViewModelBase
         }
 
         private void DatePicker_SelectedDateChanged(object sender,
@@ -62,16 +87,16 @@ namespace Invoices2020
         }
         private void Button_Click_11(object sender, RoutedEventArgs e)
         {
-            int miesiacSprzedazyLiczba=0;
-            if (txtdataSprzedazy.Text.Length == 6)
-            {
-                miesiacSprzedazyLiczba = int.Parse(txtdataSprzedazy.Text.Remove(1).ToString());
-            }
-            else if (txtdataSprzedazy.Text.Length == 7)
-            {
-                miesiacSprzedazyLiczba = int.Parse(txtdataSprzedazy.Text.Remove(2).ToString());
-            }
-            Label1.Content = miesiacSprzedazyLiczba.ToString();
+            //int miesiacSprzedazyLiczba=0;
+            //if (txtdataSprzedazy.Text.Length == 6)
+            //{
+            //    miesiacSprzedazyLiczba = int.Parse(txtdataSprzedazy.Text.Remove(1).ToString());
+            //}
+            //else if (txtdataSprzedazy.Text.Length == 7)
+            //{
+            //    miesiacSprzedazyLiczba = int.Parse(txtdataSprzedazy.Text.Remove(2).ToString());
+            //}
+            //Label1.Content = miesiacSprzedazyLiczba.ToString();
                         
 
 
