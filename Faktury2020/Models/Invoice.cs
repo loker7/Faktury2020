@@ -14,7 +14,7 @@ namespace Invoices2020
         //    this.miejsce_wystawienia = "Katowice";
         //}
 
-  
+
 
         //public string miejsce_wystawienia  = "Katowice";
         //public string data_wystawienia { get; set; }
@@ -22,7 +22,7 @@ namespace Invoices2020
         public string stalaCzescNumeruFaktury { get; set; }
         //"Faktura proforma 1-TEST-2-2020"
         //public string numerFaktury {
-           
+
         //     get { return numerFaktury; } set { numerFaktury = "1-" + stalaCzescNumeruFaktury + "-" + dataSprzedazy; }
         //}
         //"Faktura proforma 1-TEST-2-2020"
@@ -44,13 +44,13 @@ namespace Invoices2020
         //"40-085 Katowice"
         public string miastoiKodNabywcy { get; set; }
         //"41-200 Sosnowiec"
-       // public string NIPSprzedawcy { get; set; }
+        // public string NIPSprzedawcy { get; set; }
         //"NIP 634-293-59-61"
         public string nipNabywcy { get; set; }
         //"NIP 000-000-00-00"
-       // public string BankSprzedawcy { get; set; }
+        // public string BankSprzedawcy { get; set; }
         //"Nest Bank"
-       // public string KontoBankoweSprzedawcy { get; set; }
+        // public string KontoBankoweSprzedawcy { get; set; }
         //"44 2530 0008 2064 1044 1937 0001"
         public string wybranyPakiet { get; set; }
         //"np. STANDARD
@@ -81,7 +81,6 @@ namespace Invoices2020
         //    get { return nazwaFaktury; }
         //    set { nazwaFaktury = numerFaktury; }
         //}
-
     }
 
 }

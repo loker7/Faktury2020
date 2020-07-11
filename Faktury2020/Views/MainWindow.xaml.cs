@@ -39,22 +39,22 @@ namespace Invoices2020
         {
             var viewModel = new ViewModel();
 
-            viewModel.numerFaktury = "Faktura proforma 1-TEST-2-2020";
-            viewModel.sposobZaplaty = "GOTÓWKA";
-            viewModel.nazwaNabywcy = "Aldona Nieznanna";
-            viewModel.ulicaNabywcy = "ul Nieznana 20";
-            viewModel.miastoiKodNabywcy = "40-085 Katowice";
-            viewModel.nipNabywcy = "NIP 000-000-00-00";
-            viewModel.nazwaTowaruLubUslugi = "Abonament xBiuro - pakiet STANDARD na 12-MIESIĘCY";
-            viewModel.ilosc = "1";
-            viewModel.wartoscJednostkowaBrutto = "723,24";
-            viewModel.wartoscBrutto = "723,24";
-            viewModel.slownie = "KWOTA SŁOWNIE";
-            viewModel.Sum = "723,24";
-            viewModel.Paid = "0,00";
-            viewModel.LeftToPay = "0,00";
+            viewModel.numberOfInvoice = "-------------------------";
+            viewModel.wayOfPayment = "-------";
+            viewModel.buyerName = "----------------";
+            viewModel.buyerStreet = "-------------";
+            viewModel.cityAndPostalCodeOfBuyer = "---------------";
+            viewModel.nipOfBuyer = "-----------------";
+            viewModel.nameOfGoodOrService = "-------------------------------------------------";
+            viewModel.quantity = "-";
+            viewModel.valueGrossSingle = "-------";
+            viewModel.valueGrossTogether = "------";
+            viewModel.inWords = "-------------";
+            viewModel.Sum = "------";
+            viewModel.Paid = "----";
+            viewModel.LeftToPay = "----";
 
-            viewModel.additional2 = "Dokument wystawiany do Faktura zaliczka 1-NAZWA-MC....";
+            viewModel.additional2 = "------------------------------------------------------";
 
             DataContext = viewModel;
             InitializeComponent();
@@ -62,7 +62,7 @@ namespace Invoices2020
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
             txtdataWystawienia.Text = txtdataWystawienia2.Text;
 
-            viewModel.nazwaNabywcy = "Aldona NNNNNXXX"; 
+           // viewModel.buyerName = "Aldona NNNNNXXX"; 
           //  viewModel.OnPropertyChanged(nameof(ViewModel.nazwaNabywcy)); //usuwam bo dodałem ViewModelBase
         }
 
@@ -87,49 +87,7 @@ namespace Invoices2020
         }
         private void Button_Click_11(object sender, RoutedEventArgs e)
         {
-            //int miesiacSprzedazyLiczba=0;
-            //if (txtdataSprzedazy.Text.Length == 6)
-            //{
-            //    miesiacSprzedazyLiczba = int.Parse(txtdataSprzedazy.Text.Remove(1).ToString());
-            //}
-            //else if (txtdataSprzedazy.Text.Length == 7)
-            //{
-            //    miesiacSprzedazyLiczba = int.Parse(txtdataSprzedazy.Text.Remove(2).ToString());
-            //}
-            //Label1.Content = miesiacSprzedazyLiczba.ToString();
-                        
-
-
-
-            //if (sdataSprzedazy.Length == 6)
-            //{
-            //    strMcSprzedazy = sdataSprzedazy.Substring(0, 1);
-            //    strRokSprzedazy = sdataSprzedazy.Substring(2, 4).ToString();
-
-            //}
-            //else if (sdataSprzedazy.Length == 7)
-            //{
-            //    strMcSprzedazy = sdataSprzedazy.Substring(0, 2).ToString();
-            //    strRokSprzedazy = sdataSprzedazy.Substring(3, 5).ToString();
-            //}
-            //else MessageBox.Show("Proszę wprowadzić poprawną datę sprzedaży w formacie MM-RRRR", "Informacja");
-
-            ////wydobrywa miesiac z daty w formacie dd-mm-rrrr
-            //sterminPlatnosci = sterminPlatnosci.Substring(3, 2);
-
-
-            //int miesiacPlatnosci = int.Parse(sterminPlatnosci);
-            // int miesiacSprzedazy = int.Parse(sdataSprzedazy);
-            // if (miesiacPlatnosci < miesiacSprzedazy) 
-
-            // Label1.Content = strRokSprzedazy;
-
-
-            //wczytajProformyDlaDanegoMca();
-            // txtterminPlatnosci.Text = DatePicker.SelectedDateProperty.ToString();
-
-            //DatePicker picker = new DatePicker();
-            //txtterminPlatnosci.Text = picker.SelectedDate.ToString();
+            //w tym guziku się dzieje w commandzie
         }
 
         private void chkPozycja2_Checked(object sender, RoutedEventArgs e)
