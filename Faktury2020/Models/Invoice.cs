@@ -14,7 +14,7 @@ namespace Invoices2020
         //    this.miejsce_wystawienia = "Katowice";
         //}
 
-
+        
 
         //public string miejsce_wystawienia  = "Katowice";
         //public string data_wystawienia { get; set; }

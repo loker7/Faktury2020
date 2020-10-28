@@ -155,7 +155,7 @@ namespace Invoices2020.ViewModels
 
 
 
-        //public ICommand ChangeNameCommand { get; }
+        public ICommand ChangeNameCommand { get; }
         public event PropertyChangedEventHandler PropertyChanged;
        // public string dateOfIssue { get; set; }
         // public string stalaCzescNumeruFaktury { get; set; }
@@ -188,7 +188,7 @@ namespace Invoices2020.ViewModels
         // public event PropertyChangedEventHandler PropertyChanged;//uwaga inaczej niż w przykładzie
 
         private readonly DelegateCommand _changeNameCommand;
-        public ICommand ChangeNameCommand => _changeNameCommand;
+    //    public ICommand ChangeNameCommand => _changeNameCommand;
 
         public ViewModel()
         {
