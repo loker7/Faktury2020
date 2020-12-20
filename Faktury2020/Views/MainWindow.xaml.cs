@@ -1018,7 +1018,6 @@ namespace Invoices2020
             bodyBuilder.Attachments.Add(@"SKM_C.pdf"); //tu może być pełna ścieżka
             message.Body = bodyBuilder.ToMessageBody();
 
-
             var client = new SmtpClient();
 
             client.ServerCertificateValidationCallback = (s, c, h, e) => true;
