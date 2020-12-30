@@ -236,7 +236,8 @@ namespace Invoices2020
             // rowKontoBankowe.Format.Alignment = ParagraphAlignment.Right;
 
             cellMiejsceiDataWystawienia = rowMiejsceiDataWystawienia.Cells[1];
-
+            Row rowEmpty0 = tableMiejsceiDataWystawienia.AddRow(); //odstęp
+           
             //PONIŻEJ INACZEJ GDY ZALICZKA
             if (zaliczka == true)
             {
@@ -255,7 +256,7 @@ namespace Invoices2020
             //Paragraph dataWystawienia = sec.AddParagraph();
             //dataWystawienia.AddText("Wystawiono dnia: 16-03-2020");
             //dataWystawienia.Format.Alignment = ParagraphAlignment.Right;
-
+            
             sec.AddParagraph();
 
             Paragraph numerFaktury = sec.AddParagraph();
@@ -269,11 +270,20 @@ namespace Invoices2020
             }
 
             numerFaktury.Format.Font.Bold = true;
+            numerFaktury.Format.Font.Size = "16"; //większa czcionka w nazwie/numerze faktury
             numerFaktury.Format.Alignment = ParagraphAlignment.Center;
+            numerFaktury.AddText("\n" + " ");  //odstęp
+            
 
             sec.AddParagraph();
 
+            //tablePodsumowanie.Rows.Height = 25;
+//            tablePodsumowanie.Rows.VerticalAlignment = MigraDoc.DocumentObjectModel.Tables.VerticalAlignment.Center;
+
+
             Paragraph dataSprzedazy = sec.AddParagraph();
+            //dataSprzedazy.Format.LineSpacingRule
+            
             dataSprzedazy.AddText("Data sprzedaży: " + txtdataSprzedazy.Text);
             dataSprzedazy.Format.Font.Bold = true;
             dataSprzedazy.Format.Alignment = ParagraphAlignment.Right;
@@ -287,6 +297,9 @@ namespace Invoices2020
             terminPlatnosci.AddText("Termin płatności: " + txtterminPlatnosci.Text);
             terminPlatnosci.Format.Font.Bold = true;
             terminPlatnosci.Format.Alignment = ParagraphAlignment.Right;
+            terminPlatnosci.AddText("\n" + " "); //odstęp
+            terminPlatnosci.AddText("\n" + " "); //odstęp
+            terminPlatnosci.AddText("\n" + " "); //odstęp
 
             //def table sprzedawca-nabywca(SN) and its parts
             Table tableSN = new Table();
@@ -349,8 +362,10 @@ namespace Invoices2020
             cellNIPSprzedawcyiNabywcy.AddParagraph("NIP: " + txtnipNabywcy.Text);
             cellNIPSprzedawcyiNabywcy.Format.Font.Bold = true;
 
-            Row rowEmpty3 = tableSN.AddRow();
-
+            Row rowEmpty3 = tableSN.AddRow();//odstęp
+            Row rowEmpty33 = tableSN.AddRow();//odstęp
+            Row rowEmpty333 = tableSN.AddRow();//odstęp
+          
             //def table bank i konto bankowe
             Table tableBankiKontoBankowe = new Table();
             tableBankiKontoBankowe.Borders.Width = 0.0;
@@ -362,10 +377,11 @@ namespace Invoices2020
             Cell cellBankiKontoBankowe = rowBankiKontoBankowe.Cells[0];
             cellBankiKontoBankowe = rowBankiKontoBankowe.Cells[0];
             cellBankiKontoBankowe.AddParagraph("Bank: ");
-            cellBankiKontoBankowe.Format.Font.Bold = true;
+            cellBankiKontoBankowe.Format.Font.Bold = false;
             cellBankiKontoBankowe = rowBankiKontoBankowe.Cells[1];
             cellBankiKontoBankowe.AddParagraph(txtbankSprzedawcy.Text);
             cellBankiKontoBankowe.Format.Font.Bold = true;
+            Row rowEmpty3333 = tableBankiKontoBankowe.AddRow();//odstęp
 
             //def konto bankowe 
             Row rowKontoBankowe = tableBankiKontoBankowe.AddRow();
@@ -373,21 +389,25 @@ namespace Invoices2020
             cellKontoBankowe = rowKontoBankowe.Cells[0];
             cellKontoBankowe.AddParagraph("Konto: ");
             // rowKontoBankowe.Format.Alignment = ParagraphAlignment.Right;
-            cellKontoBankowe.Format.Font.Bold = true;
+            cellKontoBankowe.Format.Font.Bold = false;
 
             cellKontoBankowe = rowKontoBankowe.Cells[1];
             cellKontoBankowe.AddParagraph(txtkontoSprzedawcy.Text);
             cellKontoBankowe.Format.Font.Bold = true;
 
             Row rowEmpty4 = tableBankiKontoBankowe.AddRow();
+            Row rowEmpty44 = tableBankiKontoBankowe.AddRow();
+
 
             // chcę, aby 'POZYCJE FAKTURY' było napisane nie w obramowaniu a nad tabelą, robię więc manewr polegający na przedłużeniu niewidocznej tabeli 
             Row rowPozycjeFaktury = tableBankiKontoBankowe.AddRow();
             Cell cellPozycjeFaktury = rowPozycjeFaktury.Cells[1];
+            cellPozycjeFaktury.Format.Font.Size = "13"; //większa czcionka
             cellPozycjeFaktury = rowPozycjeFaktury.Cells[1];
             cellPozycjeFaktury.AddParagraph("POZYCJE FAKTURY");
             cellPozycjeFaktury.Format.Font.Bold = true;
             rowPozycjeFaktury.Format.Alignment = ParagraphAlignment.Left;
+            Row rowPozycjeFaktury2 = tableBankiKontoBankowe.AddRow();//odstęp
 
             doc.LastSection.Add(tableSN);
             doc.LastSection.Add(tableBankiKontoBankowe);
@@ -446,53 +466,67 @@ namespace Invoices2020
             {
                 Row row2 = table.AddRow();
                 Cell cellR2C0 = row2.Cells[0];
+                cellR2C0.AddParagraph(" ");  //odstęp wymuszony komórce
                 cellR2C0.AddParagraph(txtLp1.Text);
                 cellR2C0.Format.Alignment = ParagraphAlignment.Center;
 
                 Cell cellR2C1 = row2.Cells[1];
+                cellR2C1.AddParagraph(" "); //odstęp wymuszony w komórce
                 cellR2C1.AddParagraph(txtnazwaTowaruLubUslugi1.Text);
+                cellR2C1.AddParagraph(" "); //odstęp wymuszony na dole w najbardziej zajętej komórce - nie trzeba umieszczać odstępów w pozostałych komorkach
                 cellR2C1.Format.Alignment = ParagraphAlignment.Center;
 
                 Cell cellR2C2 = row2.Cells[2];
+                cellR2C2.AddParagraph(" ");//odstęp wymuszony w komórce
                 cellR2C2.AddParagraph(txtilosc1.Text);
                 cellR2C2.Format.Alignment = ParagraphAlignment.Center;
 
                 Cell cellR2C3 = row2.Cells[3];
+                cellR2C3.AddParagraph(" "); //odstęp wymuszony w komórce
                 cellR2C3.AddParagraph(txtjednostka1.Text);
                 cellR2C3.Format.Alignment = ParagraphAlignment.Center;
 
                 Cell cellR2C4 = row2.Cells[4];
+                cellR2C4.AddParagraph(" "); //odstęp wymuszony w komórce
                 cellR2C4.AddParagraph(txtwartoscJednostkowaBrutto1.Text);
                 cellR2C4.Format.Alignment = ParagraphAlignment.Center;
 
                 Cell cellR2C5 = row2.Cells[5];
+                cellR2C5.AddParagraph(" "); 
                 cellR2C5.AddParagraph(txtwartoscBrutto1.Text);
                 cellR2C5.Format.Alignment = ParagraphAlignment.Center;
             }
-            if (chkPozycja2.IsChecked == true)
+            if (chkPozycja2.IsChecked == true) //jeśli zaznaczymy, że chcemy dodatkową pozycję na fakturze
             {
                 Row row2 = table.AddRow();
                 Cell cellR2C0 = row2.Cells[0];
+                cellR2C0.AddParagraph(" "); //odstęp wymuszony w komórce
                 cellR2C0.AddParagraph(txtLp2.Text);
                 cellR2C0.Format.Alignment = ParagraphAlignment.Center;
 
                 Cell cellR2C1 = row2.Cells[1];
+                cellR2C1.AddParagraph(" ");  //odstęp wymuszony w komórce
                 cellR2C1.AddParagraph(txtnazwaTowaruLubUslugi2.Text);
+                cellR2C1.AddParagraph(" "); //odstęp wymuszony na dole w najbardziej zajętej komórce - nie trzeba umieszczać odstępów w pozostałych komorkach
                 cellR2C1.Format.Alignment = ParagraphAlignment.Center;
 
                 Cell cellR2C2 = row2.Cells[2];
+                cellR2C2.AddParagraph(" ");//odstęp wymuszony w komórce
                 cellR2C2.AddParagraph(txtilosc2.Text);
                 cellR2C2.Format.Alignment = ParagraphAlignment.Center;
 
                 Cell cellR2C3 = row2.Cells[3];
+                cellR2C3.AddParagraph(" "); //odstęp wymuszony w komórce
                 cellR2C3.AddParagraph(txtjednostka2.Text);
                 cellR2C3.Format.Alignment = ParagraphAlignment.Center;
 
                 Cell cellR2C4 = row2.Cells[4];
+                cellR2C4.AddParagraph(" "); //odstęp wymuszony w komórce
                 cellR2C4.AddParagraph(txtwartoscJednostkowaBrutto2.Text);
                 cellR2C4.Format.Alignment = ParagraphAlignment.Center;
 
                 Cell cellR2C5 = row2.Cells[5];
+                cellR2C5.AddParagraph(" ");//odstęp wymuszony w komórce
                 cellR2C5.AddParagraph(txtwartoscBrutto2.Text);
                 cellR2C5.Format.Alignment = ParagraphAlignment.Center;
             }
@@ -506,6 +540,8 @@ namespace Invoices2020
 
             //def tablePODSUMOWANIE Razem, Zapłacono, Pozostało do zapłaty
             Table tablePodsumowanie = new Table();
+            tablePodsumowanie.Rows.Height = 25;
+            tablePodsumowanie.Rows.VerticalAlignment = MigraDoc.DocumentObjectModel.Tables.VerticalAlignment.Center;
             tablePodsumowanie.Borders.Width = 0.5;
             Column columnPodsumowanie1 = tablePodsumowanie.AddColumn(Unit.FromCentimeter(8.25));
             columnPodsumowanie1.Format.Alignment = ParagraphAlignment.Right;
@@ -514,40 +550,58 @@ namespace Invoices2020
             Row rowPodsumowanie1 = tablePodsumowanie.AddRow();
             Cell cellPodsumowanie1 = rowPodsumowanie1.Cells[0];
             cellPodsumowanie1 = rowPodsumowanie1.Cells[0];
+          //  cellPodsumowanie1.AddParagraph(" "); //odstęp
             cellPodsumowanie1.AddParagraph("Razem");
+         // cellPodsumowanie1.Format.Font.Size = "10"; //tutaj definiujemy wielkość NAPISU "Razem"
+          //  cellPodsumowanie1.AddParagraph(" "); //odstęp
             cellPodsumowanie1.Format.Font.Bold = true;
             cellPodsumowanie1 = rowPodsumowanie1.Cells[1];
+          //  cellPodsumowanie1.Format.Font.Size = "12";//tutaj definiujemy wielkość kwoty RAZEM
+           /// cellPodsumowanie1.AddParagraph(" "); //odstęp
+           /// cellPodsumowanie1.Format.Font.Size = "8";
             cellPodsumowanie1.AddParagraph(txtrazem.Text);
+          ///  cellPodsumowanie1.AddParagraph(" "); //odstęp
             cellPodsumowanie1.Format.Font.Bold = false;
 
             Row rowPodsumowanie2 = tablePodsumowanie.AddRow();
             Cell cellPodsumowanie2 = rowPodsumowanie2.Cells[0];
             cellPodsumowanie2 = rowPodsumowanie2.Cells[0];
+           // cellPodsumowanie2.AddParagraph(" "); //odstęp
             cellPodsumowanie2.AddParagraph("Zapłacono");
+           // cellPodsumowanie2.AddParagraph(" "); //odstęp
             // rowKontoBankowe.Format.Alignment = ParagraphAlignment.Right;
             cellPodsumowanie2.Format.Font.Bold = true;
 
             cellPodsumowanie2 = rowPodsumowanie2.Cells[1];
+           /// cellPodsumowanie2.AddParagraph(" "); //odstęp
+          ///  cellPodsumowanie2.Format.Font.Size = "8";
             cellPodsumowanie2.AddParagraph(txtZaplacono.Text);
+           /// cellPodsumowanie2.AddParagraph(" "); //odstęp
             cellPodsumowanie2.Format.Font.Bold = false;
 
             Row rowPodsumowanie3 = tablePodsumowanie.AddRow();
             Cell cellPodsumowanie3 = rowPodsumowanie3.Cells[0];
             cellPodsumowanie3 = rowPodsumowanie3.Cells[0];
+           // cellPodsumowanie3.AddParagraph(" "); //odstęp
             cellPodsumowanie3.AddParagraph("Pozostało do zaplaty");
+           // cellPodsumowanie3.AddParagraph(" "); //odstęp
             // rowKontoBankowe.Format.Alignment = ParagraphAlignment.Right;
             cellPodsumowanie3.Format.Font.Bold = true;
 
             cellPodsumowanie3 = rowPodsumowanie3.Cells[1];
+           /// cellPodsumowanie3.AddParagraph(" "); //odstęp
+         ///   cellPodsumowanie3.Format.Font.Size = "8";
             cellPodsumowanie3.AddParagraph(txtPozostaloDoZaplaty.Text);
+           /// cellPodsumowanie3.AddParagraph(" "); //odstęp
             cellPodsumowanie3.Format.Font.Bold = false;
 
             doc.LastSection.Add(tablePodsumowanie);
 
             Paragraph uwagi = sec.AddParagraph();
             uwagi.Format.Font.Bold = false;
+           // uwagi.Format.Alignment = ParagraphAlignment.Justify;
             uwagi.AddText("UWAGI: " + txtuwagi.Text + " \n \n \n" + txtuwagi2.Text + " \n \n \n");
-
+            
             ////PONIŻEJ INACZEJ GDY ZALICZKA
             //if (uwagaoZaliczce == true) txtuwagi2.Text = "Dokument wystawiany do Faktura zaliczka 1-" + faktura.stalaCzescNumeruFaktury + "-" + txtdataSprzedazy.Text + " z dnia " + txtdataWystawienia.Text;
             //else txtuwagi2.Text = "";
