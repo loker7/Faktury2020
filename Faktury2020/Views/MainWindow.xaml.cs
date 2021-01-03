@@ -22,6 +22,8 @@ using MailKit.Net.Smtp;
 using MimeKit;
 using MailKit.Security;
 using Invoices2020.ViewModels;
+using System.Reflection.Metadata.Ecma335;
+using System.Net.NetworkInformation;
 
 namespace Invoices2020
 {
@@ -31,6 +33,7 @@ namespace Invoices2020
     /// 
     public partial class MainWindow : Window
     {
+        CultureInfo info = CultureInfo.GetCultureInfo("pl-PL");
         int numerzListy=0;
         public static bool uwagaoZaliczce;
         public static bool zaliczka;
@@ -1060,16 +1063,18 @@ namespace Invoices2020
             var bodyBuilder = new BodyBuilder();
 
             // from
-            message.From.Add(new MailboxAddress("from_name", "teraz@xbiuro.com"));
+            message.From.Add(new MailboxAddress("xBiuro.com Katowice", "teraz@xbiuro.com"));
             // to
             message.To.Add(new MailboxAddress("to_name", "loker7@wp.pl"));
             // reply to
             message.ReplyTo.Add(new MailboxAddress("reply_name", "loker7@wp.pl"));
 
-            message.Subject = "MAil testowy z aplikacji";
-            bodyBuilder.HtmlBody = "html body";
+            message.Subject = "Faktura za usługi xBiuro.com Wirtualne Biuro";
+            string bodyBez_stopki = "<p>Dzień dobry,</p><p>w załączeniu przesyłam fakturę za kolejny okres. Proszę o sprawne opłacenie.</p><p>&nbsp;</p><div id=\"_rc_sig\"><br /><p style=\"margin-bottom: 0in; font-variant: normal; font-style: normal; font-weight: normal; line-height: 100%;\">&nbsp;</p><p style=\"margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%;\"><span style=\"font-size: 10pt;\">&nbsp;</span></p></div>";
+            string bodyFZKO="<p>Dzień dobry,</p><p>w załączeniu przesyłam fakturę za kolejny okres. Proszę o sprawne opłacenie.</p><p>&nbsp;</p><div id=\"_rc_sig\">-- <br /><p style=\"margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; line-height: 140%;\"><span style=\"color: #004479; font-size: medium;\"><span style=\"font-family: Helvetica;\"><strong>Pozdrawiam,</strong></span></span></p><p style=\"margin-bottom: 0in; font-variant: normal; font-style: normal; font-weight: normal; line-height: 100%;\"><span style=\"font-size: medium;\">&nbsp;</span></p><p style=\"margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; line-height: 100%;\"><span style=\"color: #004479; font-size: medium;\"><span style=\"font-family: Helvetica;\"><strong>Tomasz Chajduga</strong></span></span></p><p style=\"margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%;\"><span style=\"color: #004479;\"><span style=\"font-family: Helvetica;\"><span style=\"font-size: small;\">Prezes Zarządu</span></span></span></p><p style=\"margin-bottom: 0in; font-variant: normal; font-style: normal; font-weight: normal; line-height: 100%;\">&nbsp;</p><p style=\"margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%;\"><span style=\"color: #004479;\"><span style=\"font-family: Helvetica;\"><span style=\"font-size: small;\">tel: +48 668 149 294</span></span></span></p><p style=\"margin-bottom: 0in; line-height: 100%;\"><span style=\"font-variant: normal;\"><span style=\"color: #004479;\"><span style=\"font-family: Helvetica;\"><span style=\"font-size: small;\"><span style=\"letter-spacing: normal;\"><span style=\"font-style: normal;\"><span style=\"font-weight: normal;\">e-mail: </span></span></span></span></span></span></span><span style=\"font-variant: normal;\"><span style=\"color: #004479;\"><span style=\"font-family: Helvetica;\"><span style=\"font-size: small;\"><span style=\"letter-spacing: normal;\"><span style=\"font-style: normal;\"><span style=\"text-decoration: underline;\"><span style=\"font-weight: normal;\">katowice@xbiuro.com</span></span></span></span></span></span></span></span></p><p style=\"margin-bottom: 0in; font-variant: normal; font-style: normal; font-weight: normal; line-height: 100%;\">&nbsp;</p><p style=\"margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; line-height: 100%;\"><span style=\"color: #004479;\"><span style=\"font-family: Helvetica;\"><span style=\"font-size: small;\"><strong>xSolutions Sp. z o.o. z siedzibą w Katowicach</strong></span></span></span></p><p style=\"margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%;\"><span style=\"color: #004479;\"><span style=\"font-family: Helvetica;\"><span style=\"font-size: small;\">ul. Mickiewicza 29</span></span></span></p><p style=\"margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; line-height: 100%;\"><span style=\"color: #004479;\"><span style=\"font-family: Helvetica;\"><span style=\"font-size: small;\">40-085 Katowice</span></span></span></p><p style=\"margin-bottom: 0in; line-height: 100%;\"><span style=\"font-variant: normal;\"><span style=\"color: #004479;\"><span style=\"font-family: Helvetica;\"><span style=\"font-size: small;\"><span style=\"letter-spacing: normal;\"><span style=\"font-style: normal;\"><span style=\"font-weight: normal;\">www.xbiuro.com</span></span></span></span></span></span></span></p><p style=\"margin-bottom: 0in; font-variant: normal; font-style: normal; font-weight: normal; line-height: 100%;\">&nbsp;</p><p style=\"margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-style: normal; line-height: 100%;\" align=\"justify\"><span style=\"color: #000000;\"><span style=\"font-family: Helvetica;\"><span style=\"font-size: xx-small;\"><span style=\"color: #004479;\"><strong>xSolutions</strong></span><span style=\"color: #004479;\"><strong> Sp. z o.o.&nbsp;</strong></span><span style=\"color: #004479;\">z&nbsp;</span><span style=\"color: #004479;\"><span style=\"font-weight: normal;\">siedzibą w </span></span><span style=\"color: #004479;\"><span style=\"font-weight: normal;\">Katowicach</span></span><span style=\"color: #004479;\"><span style=\"font-weight: normal;\">, ul. </span></span><span style=\"color: #004479;\"><span style=\"font-size: small;\"><span style=\"font-weight: normal;\">Mickiewicza 29</span></span></span><span style=\"color: #004479;\"><span style=\"font-weight: normal;\">, </span></span><span style=\"color: #004479;\"><span style=\"font-size: small;\"><span style=\"font-weight: normal;\">40-085 Katowice</span></span></span><span style=\"color: #004479;\"><span style=\"font-weight: normal;\">, wpisana do rejestru przedsiębiorc&oacute;w prowadzonego przez Sąd Rejonowy </span></span><span style=\"color: #004479;\"><span style=\"font-weight: normal;\">Katowice</span></span><span style=\"color: #004479;\"><span style=\"font-weight: normal;\">-Wsch&oacute;d w </span></span><span style=\"color: #004479;\"><span style=\"font-weight: normal;\">Katowicach</span></span><span style=\"color: #004479;\"><span style=\"font-weight: normal;\">, VI</span></span><span style=\"color: #004479;\"><span style=\"font-weight: normal;\">II</span></span><span style=\"color: #004479;\"><span style=\"font-weight: normal;\"> Wydział Gospodarczy Krajowego Rejestru Sądowego pod numerem KRS747589 , NIP 6342935961, REGON 381233750, kapitał zakładowy w wysokości </span></span><span style=\"color: #004479;\"><span style=\"font-weight: normal;\">1</span></span><span style=\"color: #004479;\"><span style=\"font-weight: normal;\">0.000 zł (w całości wpłacony).</span></span></span></span></span></p><p style=\"margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-weight: normal; line-height: 100%;\"><span style=\"color: #004479;\"><span style=\"font-family: Helvetica;\"><span style=\"font-size: xx-small;\"><em>Niniejsza wiadomość, wraz z załącznikami, jest przeznaczona wyłącznie dla wskazanego w niej odbiorcy (odbiorc&oacute;w) i może zawierać informacje poufne, dokumentację sporządzoną przez prawnika, informacje zastrzeżone lub niepodlegające ujawnieniu zgodnie z właściwymi przepisami. Bezwzględnie zabrania się nieuprawnionego wykorzystywania, rozpowszechniania lub kopiowania niniejszej wiadomości, w tym załącznik&oacute;w. Jeżeli otrzymali Państwo tę wiadomość omyłkowo, a nie są Państwo jej adresatem, prosimy o niezwłoczne zawiadomienie o tym fakcie nadawcy oraz o usunięcie wiadomości wraz z załącznikami z Państwa komputera.&nbsp;<span>Dziękujemy.</span></em></span></span></span></p><p style=\"margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-weight: normal; line-height: 140%;\"><span style=\"color: #004479;\"><span style=\"font-family: Helvetica;\"><span style=\"font-size: xx-small;\"><em><span>This e-mail message, including attachments, is confidential, is intended only for the named recipient(s) above and may contain information that is privileged, attorney work product, proprietary or exempt from disclosure under applicable law.&nbsp; The unauthorized use, dissemination, distribution or reproduction of this e-mail message, including attachments, is strictly prohibited.&nbsp; If you have received this message in error, or are not an intended recipient, please immediately notify the sender and delete this e-mail message, including attachments, from your computer.&nbsp;</span>Thank you.</em></span></span></span></p><p style=\"margin-bottom: 0in; font-variant: normal; letter-spacing: normal; font-weight: normal; line-height: 100%;\"><span style=\"color: #004479;\"><span style=\"font-family: Helvetica;\"><span style=\"font-size: xx-small;\"><em>Realizując obowiązek informacyjny, wynikający z Rozporządzenia Parlamentu Europejskiego i Rady (UE) 2016/679 z dnia 27 kwietnia 2016 r. w sprawie ochrony os&oacute;b fizycznych w związku z przetwarzaniem danych osobowych i w sprawie swobodnego przepływu takich danych (og&oacute;lne rozporządzenie o ochronie danych) \"RODO\" prosimy o zapoznanie się z informacjami na temat przetwarzania danych osobowych w naszej firmie: xbiuro.com/informacja-rodo/</em></span></span></span></p><p style=\"margin-bottom: 0in; font-variant: normal; font-style: normal; font-weight: normal; line-height: 100%;\">&nbsp;</p></div>";
+            bodyBuilder.HtmlBody = bodyFZKO;
             message.Body = bodyBuilder.ToMessageBody();
-            bodyBuilder.Attachments.Add(@"SKM_C.pdf"); //tu może być pełna ścieżka
+            bodyBuilder.Attachments.Add(@"C:\Users\q\Source\Repos\Faktury\Faktury2020\bin\Debug\netcoreapp3.1\" + txtnumerFaktury.Text + ".pdf"); //tu może być pełna ścieżka
             message.Body = bodyBuilder.ToMessageBody();
 
             var client = new SmtpClient();
@@ -1079,6 +1084,58 @@ namespace Invoices2020
             client.Authenticate("teraz@xbiuro.com", "123Test");
             client.Send(message);
             client.Disconnect(true);
+        }
+
+        public void ReCount()
+        {
+            
+            Decimal decHelper0 = 0;
+            Decimal decHelper1 = 0;
+            Decimal decHelper2 = 0;
+            String strHelper0 = "";
+            String strHelper1 = "";
+            String strhelper2 = "";
+
+            try
+            {
+                decHelper0 = decimal.Parse(txtilosc1.Text) * decimal.Parse(txtwartoscJednostkowaBrutto1.Text);
+            }
+            catch (System.FormatException e) { }
+                strHelper0 = decHelper0.ToString();
+            if (chkPozycja11.IsChecked == true) txtwartoscBrutto1.Text = strHelper0;
+            else
+            {
+                txtwartoscBrutto1.Text = "";
+                txtwartoscJednostkowaBrutto1.Text = "";
+            }
+            try
+            {
+                decHelper1 = decimal.Parse(txtilosc2.Text) * decimal.Parse(txtwartoscJednostkowaBrutto2.Text);
+            }
+            catch (System.FormatException e) { }
+          
+            strHelper1 = decHelper1.ToString();
+            if (chkPozycja2.IsChecked == true) txtwartoscBrutto2.Text = strHelper1;
+            else
+            {
+                txtwartoscJednostkowaBrutto2.Text = "";
+                txtwartoscBrutto2.Text = "";
+            }
+            decHelper2 = decHelper1 + decHelper0;
+            txtrazem.Text = decHelper2.ToString();
+            string pomocniczy;
+            string pomocniczy1;
+            pomocniczy1 = (decHelper2 % 1).ToString();
+            pomocniczy = pomocniczy1.Substring(2,2) + "/100 groszy brutto";
+            int pomocniczyInt = Decimal.ToInt32(decHelper2);
+            txtslownie.Text = "SŁOWNIE: " + AmointInWords.LiczbaSlownie(pomocniczyInt) + " " + AmointInWords.WalutaSlownie(pomocniczyInt, "PLN") + " i " + pomocniczy;
+            txtslownie.Text = txtslownie.Text.ToUpper();
+        }
+
+
+        private void btnRecount_Click(object sender, RoutedEventArgs e)
+        {
+            ReCount();
         }
     }
 }

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Faktury2020"
         mc:Ignorable="d"
         Title="MainWindow" Height="770" Width="900">
-    <Grid Margin="50,0,10,0">
+    <Grid Margin="50,0,10,-13">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="11*"/>
             <ColumnDefinition Width="39*"/>
@@ -45,7 +45,7 @@
         <Label Content="Jedn." HorizontalAlignment="Left" Height="25" Margin="432,369,0,0" VerticalAlignment="Top" Width="37" FontSize="10" Grid.Column="3" FlowDirection="LeftToRight" FontWeight="Bold" Foreground="Black" OpacityMask="Black" BorderBrush="#FF4F4E4E" BorderThickness="1,1,1,1" SnapsToDevicePixels="True" HorizontalContentAlignment="Center"/>
         <Label Content="" HorizontalAlignment="Left" Height="25" Margin="468,369,0,0" VerticalAlignment="Top" Width="78" FontSize="10" Grid.Column="3" FlowDirection="LeftToRight" FontWeight="Bold" Foreground="Black" OpacityMask="Black" BorderBrush="#FF4F4E4E" BorderThickness="1,1,1,1" SnapsToDevicePixels="True"/>
         <TextBlock Grid.Column="3" HorizontalAlignment="Left" Height="22" Margin="467,369,0,0" Text="Wartość jedn. brutto PLN" TextWrapping="Wrap" VerticalAlignment="Top" Width="78" FontWeight="Bold" FontSize="10" TextAlignment="Center"/>
-        <TextBlock Grid.Column="3" HorizontalAlignment="Left" Height="22" Margin="548,375,0,0" Text="Wartość brutto PLN" TextWrapping="Wrap" VerticalAlignment="Top" Width="78" FontWeight="Bold" FontSize="10" TextAlignment="Center"/>
+        <TextBlock Grid.Column="3" HorizontalAlignment="Left" Height="22" Margin="548,370,0,0" Text="Wartość brutto PLN" TextWrapping="Wrap" VerticalAlignment="Top" Width="78" FontWeight="Bold" FontSize="10" TextAlignment="Center"/>
         <Label Content="" HorizontalAlignment="Left" Height="25" Margin="545,369,0,0" VerticalAlignment="Top" Width="84" FontSize="10" Grid.Column="3" FlowDirection="LeftToRight" FontWeight="Bold" Foreground="Black" OpacityMask="Black" BorderBrush="#FF4F4E4E" BorderThickness="1,1,1,1" SnapsToDevicePixels="True"/>
         <TextBox x:Name="txtnazwaTowaruLubUslugi1" Grid.Column="3" HorizontalAlignment="Left" Height="42" Margin="234,393,0,0" Text="{Binding Path=nameOfGoodOrService}" TextWrapping="Wrap" VerticalAlignment="Top" Width="162" Background="{x:Null}" BorderBrush="Black" TextAlignment="Center" BorderThickness="1,1,0,1" VerticalContentAlignment="Center"/>
         <TextBox x:Name="txtilosc1" Grid.Column="3" HorizontalAlignment="Left" Height="42" Margin="396,393,0,0" Text="{Binding Path=quantity}" TextWrapping="Wrap" VerticalAlignment="Top" Width="37" Background="{x:Null}" BorderBrush="Black" TextAlignment="Center" BorderThickness="1,1,0,1" VerticalContentAlignment="Center"/>
@@ -89,9 +89,6 @@
         <Button Content="Test" Command="{Binding Path=ChangeNameCommand}" HorizontalAlignment="Left" Height="30" Margin="11,591,0,0" VerticalAlignment="Top" Width="168" Click="Button_Click_11" Grid.ColumnSpan="3"/>
         <RadioButton x:Name="optProformy" Content="Generuj proformy właściwe dla danego miesiąca" HorizontalAlignment="Left" Height="13" Margin="19,255,0,0" VerticalAlignment="Top" Width="250" Grid.ColumnSpan="3" Grid.Column="1"/>
         <RadioButton x:Name="optKoncowe" Content="Generuj faktury końcowe dla danego miesiąca" Grid.ColumnSpan="3" HorizontalAlignment="Left" Height="19" Margin="19,273,0,0" VerticalAlignment="Top" Width="250" Grid.Column="1"/>
-        <Button x:Name="btnNext" Content="Następny &gt;" Grid.Column="3" HorizontalAlignment="Left" Margin="359,700,0,8" Width="123" Click="btnNext_Click" Height="30" IsEnabled="False"/>
-        <Button x:Name="btnBack" Content="&lt; Poprzedni" Grid.Column="3" HorizontalAlignment="Left" Margin="227,699,0,9" Width="123" Click="btnBack_Click" Height="30" IsEnabled="False"/>
-        <Button x:Name="btnZapisz" Content="Zapisz PDF" Grid.Column="3" HorizontalAlignment="Left" Margin="517,700,0,8" Width="123" Click="btnZapisz_Click" Height="30" IsEnabled="False"/>
         <Label x:Name="lblKolejna" Content="---" Grid.Column="3" HorizontalAlignment="Left" Height="25" Margin="326,682,0,0" VerticalAlignment="Top" Width="300"/>
         <RadioButton x:Name="optAll" Content="Przeglądaj całą bazę (dla wszystkich miesięcy)" Grid.ColumnSpan="3" HorizontalAlignment="Left" Height="19" Margin="19,290,0,0" VerticalAlignment="Top" Width="250" Grid.Column="1"/>
         <TextBox x:Name="txtnazwaSprzedawcy_Copy2" HorizontalAlignment="Left" Height="19" Margin="19,207,0,0" Text="Termin płatności:" TextWrapping="Wrap" VerticalAlignment="Top" Width="151" FontSize="9" UseLayoutRounding="False" BorderBrush="{x:Null}" FontWeight="Bold" Grid.ColumnSpan="3" Grid.Column="1"/>
@@ -100,8 +97,11 @@
         <TextBox x:Name="txtuwagi2" Grid.Column="3" HorizontalAlignment="Left" Height="17" Margin="256,631,0,0" Text="{Binding Path=additional2}" TextWrapping="Wrap" VerticalAlignment="Top" Width="376" Background="{x:Null}" BorderBrush="Black" TextAlignment="Left" BorderThickness="0,0,0,0" VerticalContentAlignment="Center" FontWeight="Regular" HorizontalContentAlignment="Left" FontSize="12"/>
         <Button x:Name="btnWyszukaj" Content="Wyszukaj w bazie dla zadanych kryteriów" Grid.Column="1" HorizontalAlignment="Left" Height="32" Margin="54,312,0,0" VerticalAlignment="Top" Width="241" Grid.ColumnSpan="3" Click="btnWyszukaj_Click"/>
         <TextBox x:Name="txtterminPlatnosciCopy" Grid.Column="3" HorizontalAlignment="Left" Height="25" Margin="20,201,0,0" Text="01-06-2020" TextWrapping="Wrap" VerticalAlignment="Top" Width="116" FontSize="13" UseLayoutRounding="False" BorderBrush="{x:Null}" TextChanged="txtterminPlatnosciCopy_TextChanged"/>
-        <Button Content="Wyślij maila z załącznikiem" Grid.ColumnSpan="3" HorizontalAlignment="Left" Height="32" Margin="11,517,0,0" VerticalAlignment="Top" Width="154" Click="Button_Click"/>
-        <Button Content="Przelicz wartości" Command="{Binding Path=ReCountCommand}" Grid.Column="3" HorizontalAlignment="Left" Height="20" Margin="235,518,0,0" VerticalAlignment="Top" Width="88"/>
+        <Button Content="Wyślij mailem" HorizontalAlignment="Left" Height="30" Margin="565,709,0,0" VerticalAlignment="Top" Width="84" Click="Button_Click" Grid.Column="3" IsDefault="True"/>
+        <Button x:Name="btnRecount" Content="Przelicz wartości" Grid.Column="3" HorizontalAlignment="Left" Height="18" Margin="197,524,0,0" VerticalAlignment="Top" Width="89" Click="btnRecount_Click"/>
+        <Button x:Name="btnBack" Content="&lt; Poprzedni" Grid.Column="3" HorizontalAlignment="Left" Margin="191,702,0,20" Width="123" Click="btnBack_Click" Height="30" IsEnabled="False"/>
+        <Button x:Name="btnNext" Content="Następny &gt;" Grid.Column="3" HorizontalAlignment="Left" Margin="323,702,0,19" Width="123" Click="btnNext_Click" Height="30" IsEnabled="False"/>
+        <Button x:Name="btnZapisz" Content="Zapisz PDF" Grid.Column="3" HorizontalAlignment="Left" Margin="476,702,0,19" Width="84" Click="btnZapisz_Click" Height="30" IsEnabled="False"/>
 
     </Grid>
 </Window>
